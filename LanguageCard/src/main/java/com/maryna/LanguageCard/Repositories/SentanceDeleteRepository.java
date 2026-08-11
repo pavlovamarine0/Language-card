@@ -1,0 +1,18 @@
+package com.maryna.LanguageCard.Repositories;
+
+import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Service;
+
+@Service
+public class SentanceDeleteRepository {
+    public final JdbcClient _jdbc;
+    public SentanceDeleteRepository(JdbcClient jdbcClient){
+        _jdbc = jdbcClient;
+    }
+    public void delete(int id){
+        _jdbc.sql("DELETE FROM SENTANCES WHERE ID = :id")
+                .param("id", id)
+                .update();
+    }
+}
