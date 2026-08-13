@@ -7,6 +7,9 @@ import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class CardRepository {
     private final JdbcClient _jdbc;
@@ -25,5 +28,52 @@ public class CardRepository {
         var id = ((Number)keyHolder.getKeys().get("id")).intValue();
         cardModel.setId(id);
         return cardModel;
+    }
+    public Boolean exists(int cardId){
+        var count = _jdbc.sql("SELECT COUNT(*) FROM CARDS WHERE ID = :id")
+                .param("id", cardId)
+                .query(Integer.class)
+                .single();
+        return count == 1;
+    }
+    public void delete(int id){
+        _jdbc.sql("DELETE FROM CARDS WHERE ID = :id")
+                .param("id", id)
+                .update();
+    }
+    public Optional<CardModel> getById(int id){
+        return _jdbc.sql("SELECT * FROM CARDS WHERE ID = :id")
+                .param("id", id)
+                .query(CardModel.class)
+                .optional();
+
+    }
+    public List<CardModel> getAll() {
+        return _jdbc.sql("SELECT * FROM CARDS")
+                .query(CardModel.class)
+                .list();
+    }
+    public int selectOne(CardModel cardModel) {
+        var count = _jdbc.sql("SELECT COUNT(*) FROM CARDS WHERE ID = :id")
+                .param("id", cardModel.getId())
+                .query(Integer.class)
+                .single();
+        return count;
+    }
+    public int update(CardModel cardModel){
+        _jdbc.sql("UPDATE CARDS SET WORD = :word, TRANS_WORD = :trans_Word, PLURAL = :plural WHERE ID = :id")
+                .param("word", cardModel.getWord())
+                .param("trans_Word", cardModel.getTransWord())
+                .param("plural", cardModel.getPlural())
+                .param("id", cardModel.getId())
+                .update();
+
+        return cardModel.getId();
+    }
+    public void connect(CardModel cardModel, int themaId){
+        _jdbc.sql("INSERT INTO THEMAS_CARDS(THEMA_ID, CARD_ID) VALUES(:themaId, :id)")
+                .param("themaId",themaId)
+                .param("id",cardModel.getId())
+                .update();
     }
 }
