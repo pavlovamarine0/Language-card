@@ -29,8 +29,8 @@ public class ThemasController {
     }
 
     @PostMapping()
-    public ThemaModel createThema(@RequestParam String name) {
-        return _themaService.create(name);
+    public ThemaModel createThema(@RequestBody ThemaModel themaModel) {
+        return _themaService.create(themaModel.getName());
     }
 
     @PutMapping()

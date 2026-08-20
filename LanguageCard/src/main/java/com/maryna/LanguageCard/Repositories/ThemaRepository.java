@@ -37,7 +37,7 @@ public class ThemaRepository {
                 .query(ThemaModel.class)
                 .optional();
     }
-    public ThemaModel create(@RequestParam String name) {
+    public ThemaModel create(String name) {
         var keyHolder = new GeneratedKeyHolder();
         _jdbc.sql("INSERT INTO THEMAS(NAME) VALUES(:name) returning id").param("name",name).update(keyHolder);
         var id = ((Number)keyHolder.getKeys().get("id")).intValue();
@@ -46,14 +46,14 @@ public class ThemaRepository {
         themaModel.setName(name);
         return themaModel;
     }
-    public ThemaModel update(@RequestBody ThemaModel themaModel){
+    public ThemaModel update(ThemaModel themaModel){
         _jdbc.sql("UPDATE THEMAS SET NAME = :name WHERE ID = :id")
                 .param("name", themaModel.getName())
                 .param("id", themaModel.getId())
                 .update();
         return themaModel;
     }
-    public int select(@RequestBody ThemaModel themaModel){
+    public int select(ThemaModel themaModel){
         var count = _jdbc.sql("SELECT COUNT(*) FROM themas WHERE ID = :id")
                 .param("id", themaModel.getId())
                 .query(Integer.class)

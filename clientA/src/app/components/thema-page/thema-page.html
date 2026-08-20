@@ -1,0 +1,22 @@
+<input class="form-control" type="text" [(ngModel)]="thema">
+<button (click)="pressButton()" class ="btn btn-dark">
+    Add a new theme
+</button>
+<table>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @for (theme of themas; track theme)
+        {
+        <tr>
+            <td>{{theme.id}}</td>
+            <td>{{theme.name}}</td>
+        </tr>
+        }
+    </tbody>
+</table>
