@@ -11,11 +11,25 @@
     </thead>
 
     <tbody>
-        @for (theme of themas; track theme)
+        @for (theme of themas(); track theme.id)
         {
         <tr>
             <td>{{theme.id}}</td>
-            <td>{{theme.name}}</td>
+            <td>
+                @if(editingId === theme.id){
+                    <input class="form-control form-control-sm" [(ngModel)]="editingName"/>
+                }@else{
+                    {{theme.name}}
+                }</td>
+            <td>
+                @if(editingId === theme.id){
+                    <button (click)="saveEdit(theme)" class="btn btn-primary">Save</button>
+                    <button (click)="canselEdit()" class="btn btn-secondary">Cansel</button>
+                }@else{
+                <button (click)="pressDelete(theme.id)" class="btn btn-danger">Delete</button>
+                <button (click)="startEdit(theme)" class="btn btn-success">Change</button>
+                }
+                </td>
         </tr>
         }
     </tbody>

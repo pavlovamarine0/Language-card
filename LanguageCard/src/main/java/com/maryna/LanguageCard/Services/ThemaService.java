@@ -26,7 +26,7 @@ public class ThemaService {
         return thema.get();
     }
 
-    public ThemaModel create(@RequestParam String name) {
+    public ThemaModel create(String name) {
         /// #1
         //int id = _jdbc.sql("INSERT INTO THEMAS(NAME) VALUES('"+name+"') returning id").query(int.class).single();
         //Thema thema = new Thema();
@@ -38,7 +38,7 @@ public class ThemaService {
         return thema;
     }
 
-    public ThemaModel update(@RequestBody ThemaModel themaModel)throws BadRequestException{
+    public ThemaModel update(ThemaModel themaModel)throws BadRequestException{
         var count = _themaRepository.select(themaModel);
         if(count == 0){
             throw new BadRequestException("There is no such a theme!");
