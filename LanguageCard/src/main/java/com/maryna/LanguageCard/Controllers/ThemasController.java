@@ -39,7 +39,7 @@ public class ThemasController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteThema(@PathVariable int id) {
+    public void deleteThema(@PathVariable int id)throws BadRequestException {
         _themaService.delete(id);
     }
 }

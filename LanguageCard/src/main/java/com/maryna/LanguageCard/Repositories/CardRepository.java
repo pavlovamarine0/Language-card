@@ -70,10 +70,4 @@ public class CardRepository {
 
         return cardModel.getId();
     }
-    public void connect(CardModel cardModel, int themaId){
-        _jdbc.sql("INSERT INTO THEMAS_CARDS(THEMA_ID, CARD_ID) VALUES(:themaId, :id)")
-                .param("themaId",themaId)
-                .param("id",cardModel.getId())
-                .update();
-    }
 }

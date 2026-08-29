@@ -1,6 +1,7 @@
 package com.maryna.LanguageCard.Services;
 
 import com.maryna.LanguageCard.Models.ThemaModel;
+import com.maryna.LanguageCard.Repositories.ThemaCardRepository;
 import com.maryna.LanguageCard.Repositories.ThemaRepository;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
@@ -11,8 +12,10 @@ import java.util.List;
 @Service
 public class ThemaService {
     private final ThemaRepository _themaRepository;
-    public ThemaService(ThemaRepository themaRepository) {
+    private  final ThemaCardRepository _themaCardRepository;
+    public ThemaService(ThemaRepository themaRepository, ThemaCardRepository themaCardRepository) {
         _themaRepository = themaRepository;
+        _themaCardRepository = themaCardRepository;
     }
     public List<ThemaModel> getAll() {
         return _themaRepository.getAll();
@@ -47,7 +50,10 @@ public class ThemaService {
         return getById(themaModel.getId());
     }
 
-    public void delete(int id){
+    public void delete(int id)throws BadRequestException{
+        if(_themaCardRepository.exists(id)){
+            throw new BadRequestException("This theme has cards!");
+        }
         _themaRepository.delete(id);
     }
 }

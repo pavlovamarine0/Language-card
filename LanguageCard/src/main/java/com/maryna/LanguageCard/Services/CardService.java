@@ -12,9 +12,11 @@ import java.util.List;
 public class CardService {
     private final CardRepository _cardRepository;
     private final ThemaRepository _themaRepository;
-    public CardService(CardRepository cardRepository, ThemaRepository themaRepository) {
+    private final ThemaCardRepository _themaCard;
+    public CardService(CardRepository cardRepository, ThemaRepository themaRepository, ThemaCardRepository themaCard) {
         _cardRepository = cardRepository;
         _themaRepository = themaRepository;
+        _themaCard = themaCard;
     }
 
     public List<CardModel> getAll() {
@@ -35,7 +37,7 @@ public class CardService {
             throw new BadRequestException("There is no such a theme!");
         }
        cardModel = _cardRepository.create(cardModel);
-        _cardRepository.connect(cardModel, themaId);
+        _themaCard.bind(cardModel.getId(), themaId);
         return cardModel;
     }
 

@@ -17,56 +17,50 @@ import { ThemaModel } from '../../Models/thema.model';
   styleUrl: './thema-page.css',
 })
 export class ThemaPage implements OnInit {
-  thema = '';
   private readonly url = 'http://localhost:8080/api/themas';
   themas = signal<ThemaModel[]>([]);
   private readonly _client = inject(HttpClient);
-  // private readonly _cdr = inject(ChangeDetectorRef);
-  editingId: number | null = null;
-  editingName: string = '';
+  thema = new ThemaModel();
   ngOnInit(): void {
     this._client.get<ThemaModel[]>(this.url).subscribe((res) => {
       this.themas.set(res);
-      //this._cdr.markForCheck();
     });
   }
 
   //constructor(public client: HttpClient) {}
 
   pressButton() {
-    if (!this.thema.trim()) {
+    if (!this.thema.name.trim()) {
       console.log('Not working');
       return;
     }
-    this._client.post<ThemaModel>(this.url, { name: this.thema }).subscribe((res) => {
+    this._client.post<ThemaModel>(this.url, { name: this.thema.name }).subscribe((res) => {
       this.themas.update((list) => [...list, res]);
-      this.thema = '';
+      this.thema = new ThemaModel();
     });
   }
-  pressDelete(id: number) {
+  pressDelete() {
     this._client
-      .delete<void>(`${this.url}/${id}`)
-      .subscribe(() => this.themas.update((l) => l.filter((t) => t.id !== id)));
+      .delete<void>(`${this.url}/${this.thema.id}`)
+      .subscribe(() => this.themas.update((l) => l.filter((t) => t.id !== this.thema.id)));
+    this.canselEdit();
   }
   startEdit(theme: ThemaModel) {
-    this.editingId = theme.id;
-    this.editingName = theme.name;
+    this.thema = { ...theme };
   }
   canselEdit() {
-    this.editingId = null;
-    this.editingName = '';
+    this.thema = new ThemaModel();
   }
-  saveEdit(theme: ThemaModel) {
-    if (!this.editingName.trim()) {
+  saveEdit() {
+    if (!this.thema.name.trim()) {
       return;
     }
-    const updateTheme = { ...theme, name: this.editingName };
-    this._client.put<ThemaModel>(this.url, updateTheme).subscribe((res) => {
+    this._client.put<ThemaModel>(this.url, this.thema).subscribe((res) => {
       this.themas.update((l) => {
-        const index = l.findIndex(t => t.id === theme.id)
+        const index = l.findIndex((t) => t.id === this.thema.id);
         l[index] = res;
         return l;
-      })
+      });
       this.canselEdit();
     });
   }
