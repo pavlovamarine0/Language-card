@@ -9,6 +9,7 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ThemaModel } from '../../Models/thema.model';
+import { ThemaService } from '../../services/thema.service';
 
 @Component({
   selector: 'app-thema-page',
@@ -17,12 +18,12 @@ import { ThemaModel } from '../../Models/thema.model';
   styleUrl: './thema-page.css',
 })
 export class ThemaPage implements OnInit {
-  private readonly url = 'http://localhost:8080/api/themas';
+  themaService = inject(ThemaService);
   themas = signal<ThemaModel[]>([]);
-  private readonly _client = inject(HttpClient);
+  
   thema = new ThemaModel();
   ngOnInit(): void {
-    this._client.get<ThemaModel[]>(this.url).subscribe((res) => {
+    this.themaService.getAll().subscribe((res) => {
       this.themas.set(res);
     });
   }
@@ -34,15 +35,14 @@ export class ThemaPage implements OnInit {
       console.log('Not working');
       return;
     }
-    this._client.post<ThemaModel>(this.url, { name: this.thema.name }).subscribe((res) => {
+    this.themaService.create(this.thema).subscribe((res) => {
       this.themas.update((list) => [...list, res]);
       this.thema = new ThemaModel();
     });
   }
   pressDelete() {
-    this._client
-      .delete<void>(`${this.url}/${this.thema.id}`)
-      .subscribe(() => this.themas.update((l) => l.filter((t) => t.id !== this.thema.id)));
+    this.themaService.delete(this.thema.id)
+    .subscribe(() => this.themas.update((l) => l.filter((t) => t.id !== this.thema.id)));
     this.canselEdit();
   }
   startEdit(theme: ThemaModel) {
@@ -55,7 +55,7 @@ export class ThemaPage implements OnInit {
     if (!this.thema.name.trim()) {
       return;
     }
-    this._client.put<ThemaModel>(this.url, this.thema).subscribe((res) => {
+    this.themaService.update(this.thema).subscribe((res) => {
       this.themas.update((l) => {
         const index = l.findIndex((t) => t.id === this.thema.id);
         l[index] = res;

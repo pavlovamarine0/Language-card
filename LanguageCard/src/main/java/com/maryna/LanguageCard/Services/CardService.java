@@ -29,7 +29,7 @@ public class CardService {
     public CardModel getById(int id)throws BadRequestException {
         var card = _cardRepository.getById(id);
         if(card.isEmpty()){
-            throw new BadRequestException("There is no such a theme!");
+            throw new BadRequestException("There is no such a card!");
         }
         return card.get();
     }
