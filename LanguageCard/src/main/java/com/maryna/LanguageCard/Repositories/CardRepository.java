@@ -1,10 +1,8 @@
 package com.maryna.LanguageCard.Repositories;
 
 import com.maryna.LanguageCard.Models.CardModel;
-import org.apache.coyote.BadRequestException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,7 +44,6 @@ public class CardRepository {
                 .param("id", id)
                 .query(CardModel.class)
                 .optional();
-
     }
     public List<CardModel> getAll() {
         return _jdbc.sql("SELECT * FROM CARDS")
@@ -67,7 +64,6 @@ public class CardRepository {
                 .param("plural", cardModel.getPlural())
                 .param("id", cardModel.getId())
                 .update();
-
         return cardModel.getId();
     }
 }

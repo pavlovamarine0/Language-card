@@ -1,13 +1,9 @@
 package com.maryna.LanguageCard.Repositories;
 
 import com.maryna.LanguageCard.Models.ThemaModel;
-import org.apache.coyote.BadRequestException;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Optional;
@@ -39,7 +35,9 @@ public class ThemaRepository {
     }
     public ThemaModel create(String name) {
         var keyHolder = new GeneratedKeyHolder();
-        _jdbc.sql("INSERT INTO THEMAS(NAME) VALUES(:name) returning id").param("name",name).update(keyHolder);
+        _jdbc.sql("INSERT INTO THEMAS(NAME) VALUES(:name) returning id")
+                .param("name",name)
+                .update(keyHolder);
         var id = ((Number)keyHolder.getKeys().get("id")).intValue();
         ThemaModel themaModel = new ThemaModel();
         themaModel.setId(id);

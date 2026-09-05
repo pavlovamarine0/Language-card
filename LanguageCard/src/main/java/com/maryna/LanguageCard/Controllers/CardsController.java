@@ -3,8 +3,6 @@ package com.maryna.LanguageCard.Controllers;
 import com.maryna.LanguageCard.Models.CardModel;
 import com.maryna.LanguageCard.Services.CardService;
 import org.apache.coyote.BadRequestException;
-import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -39,7 +37,7 @@ public class CardsController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCard(int id) {
+    public void deleteCard(int id)throws BadRequestException {
         _cardService.delete(id);
     }
 }

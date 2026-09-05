@@ -5,8 +5,6 @@ import com.maryna.LanguageCard.Repositories.ThemaCardRepository;
 import com.maryna.LanguageCard.Repositories.ThemaRepository;
 import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 @Service
@@ -30,13 +28,6 @@ public class ThemaService {
     }
 
     public ThemaModel create(String name) {
-        /// #1
-        //int id = _jdbc.sql("INSERT INTO THEMAS(NAME) VALUES('"+name+"') returning id").query(int.class).single();
-        //Thema thema = new Thema();
-        //thema.setId(id);
-        //thema.setName(name);
-        //return thema;
-        /// #2
         var thema = _themaRepository.create(name);
         return thema;
     }

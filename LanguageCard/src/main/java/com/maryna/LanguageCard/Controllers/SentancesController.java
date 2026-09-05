@@ -1,6 +1,5 @@
 package com.maryna.LanguageCard.Controllers;
 
-import com.maryna.LanguageCard.Models.CardModel;
 import com.maryna.LanguageCard.Models.SentanceModel;
 import com.maryna.LanguageCard.Services.SentanceService;
 import org.apache.coyote.BadRequestException;

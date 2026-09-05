@@ -35,12 +35,6 @@ public class SentanceRepository {
                 .query(SentanceModel.class)
                 .optional();
     }
-    public void connect(SentanceModel sentanceModel, int cardId){
-        _jdbc.sql("INSERT INTO CARDS_SENTANCE(SENTANCE_ID, CARD_ID) VALUES(:id, :cardId)")
-                .param("cardId",cardId)
-                .param("id",sentanceModel.getId())
-                .update();
-    }
     public List<SentanceModel> getAll() {
         return _jdbc.sql("SELECT * FROM SENTANCES")
                 .query(SentanceModel.class)

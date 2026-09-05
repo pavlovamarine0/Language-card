@@ -12,11 +12,14 @@ import java.util.List;
 public class CardService {
     private final CardRepository _cardRepository;
     private final ThemaRepository _themaRepository;
-    private final ThemaCardRepository _themaCard;
-    public CardService(CardRepository cardRepository, ThemaRepository themaRepository, ThemaCardRepository themaCard) {
+    private final ThemaCardRepository _themaCardRepository;
+    private final CardSentanceRepository _cardSentanceRepository;
+    public CardService(CardRepository cardRepository, ThemaRepository themaRepository, ThemaCardRepository themaCard,
+                       CardSentanceRepository cardSentanceRepository) {
         _cardRepository = cardRepository;
         _themaRepository = themaRepository;
-        _themaCard = themaCard;
+        _themaCardRepository = themaCard;
+        _cardSentanceRepository = cardSentanceRepository;
     }
 
     public List<CardModel> getAll() {
@@ -37,7 +40,7 @@ public class CardService {
             throw new BadRequestException("There is no such a theme!");
         }
        cardModel = _cardRepository.create(cardModel);
-        _themaCard.bind(cardModel.getId(), themaId);
+        _themaCardRepository.bind(cardModel.getId(), themaId);
         return cardModel;
     }
 
@@ -50,7 +53,10 @@ public class CardService {
         return getById(cardId);
     }
 
-    public void delete(int id){
+    public void delete(int id)throws BadRequestException{
+        if(_cardSentanceRepository.exists(id)){
+            throw new BadRequestException("This card has saved sentences!");
+        }
         _cardRepository.delete(id);
     }
 }

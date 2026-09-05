@@ -3,8 +3,6 @@ package com.maryna.LanguageCard.Controllers;
 import com.maryna.LanguageCard.Models.ThemaModel;
 import com.maryna.LanguageCard.Services.ThemaService;
 import org.apache.coyote.BadRequestException;
-import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
