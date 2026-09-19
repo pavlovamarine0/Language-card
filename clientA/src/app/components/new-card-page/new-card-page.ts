@@ -17,12 +17,21 @@ import { SelectThemasModal } from '../thema-page/select-themas-modal/select-them
 })
 export class NewCardPage implements OnInit {
   ngOnInit(): void {
-    this.route.paramMap.subscribe(params => {
-      const id = params.get("id");
-      if(!id)
+    this.route.paramMap.subscribe((params) => {
+      const id = params.get('id');
+      if (!id) {
         return;
+      }
+      this.cardService.getById(Number(id)).subscribe({
+        next: (card) => {
+          this.card.set(card);
+        },
+        error: (err) => {
+          console.error(err);
+        },
+      });
       console.log(id);
-    })
+    });
   }
   private cardService = inject(CardService);
   private themaService = inject(ThemaService);
@@ -30,16 +39,28 @@ export class NewCardPage implements OnInit {
   private modalService = inject(NgbModal);
   card = signal<CardModel>(new CardModel());
   selectedThemas = signal<ThemaModel[]>([]);
-  editMode = false;
   route = inject(ActivatedRoute);
 
   //constructor(public client: HttpClient) {}
+
   createButton() {
     if (!this.card().word.trim()) {
       console.log('Not working');
       return;
     }
-    this.card().themaIds = this.selectedThemas().map(t => t.id)
+    this.card().themaIds = this.selectedThemas().map((t) => t.id);
+    if (this.isEditMode()) {
+      this.cardService.update(this.card()).subscribe({
+        next: (res) => {
+          this.card.set(res);
+          this.toastr.success('The card is updated!');
+        },
+        error: (err) => {
+          console.error(err);
+        },
+      });
+      return;
+    }
     this.cardService.create(this.card()).subscribe({
       next: (res) => {
         this.card.set(res);
@@ -53,18 +74,6 @@ export class NewCardPage implements OnInit {
   pressDelete() {
     this.cardService.delete(this.card().id).subscribe(() => {});
   }
-  cancelEdit() {
-    this.editMode = false;
-  }
-  /*saveEdit() {
-      if (!this.card().word || !this.card.transWord || !this.card.plural) {
-        return;
-      }
-      this.cardService.create(this.card).subscribe((res) => {
-        this.card = res;
-        this.editMode = false;
-        });
-    }*/
   themasBtn() {
     const modal = this.modalService.open(SelectThemasModal);
     modal.componentInstance.selectedThemas = this.selectedThemas();
@@ -72,5 +81,8 @@ export class NewCardPage implements OnInit {
       this.selectedThemas.set(data);
       console.log(data);
     });
+  }
+  isEditMode(){
+    return this.card().id !== 0;
   }
 }

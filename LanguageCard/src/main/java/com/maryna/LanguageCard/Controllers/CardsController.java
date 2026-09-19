@@ -22,7 +22,7 @@ public class CardsController {
     }
 
     @GetMapping("/{id}")
-    public CardModel getCard(int id) throws BadRequestException {
+    public CardModel getCard(@PathVariable int id) throws BadRequestException {
         return _cardService.getById(id);
     }
 

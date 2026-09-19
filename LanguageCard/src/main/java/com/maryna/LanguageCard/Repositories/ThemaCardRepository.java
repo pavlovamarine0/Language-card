@@ -4,6 +4,8 @@ import com.maryna.LanguageCard.Models.CardModel;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class ThemaCardRepository {
     private final JdbcClient _jdbc;
@@ -11,6 +13,13 @@ public class ThemaCardRepository {
     {
         _jdbc = jdbcClient;
     }
+    public List<Integer> getThemaIds(int cardId){
+        return _jdbc.sql("SELECT THEMA_ID FROM THEMAS_CARDS WHERE CARD_ID = :id")
+                .param("id",cardId)
+                .query(Integer.class)
+                .list();
+    }
+
     public void bind(int cardId, int themaId){
         _jdbc.sql("INSERT INTO THEMAS_CARDS(THEMA_ID, CARD_ID) VALUES(:themaId, :cardId)")
                 .param("themaId",themaId)

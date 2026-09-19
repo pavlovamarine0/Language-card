@@ -7,6 +7,7 @@ import org.apache.coyote.BadRequestException;
 import org.springframework.stereotype.Service;
 
 
+import java.util.LinkedList;
 import java.util.List;
 @Service
 public class CardService {
@@ -31,7 +32,10 @@ public class CardService {
         if(card.isEmpty()){
             throw new BadRequestException("There is no such a card!");
         }
-        return card.get();
+        var cardModel = card.get();
+        cardModel.setThemaIds(new LinkedList<>(_themaCardRepository.getThemaIds(id)));
+
+        return cardModel;
     }
 
     @Transactional()
