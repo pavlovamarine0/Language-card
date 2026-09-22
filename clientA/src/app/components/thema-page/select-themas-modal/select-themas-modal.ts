@@ -19,6 +19,7 @@ export class SelectThemasModal implements OnInit {
     this.themaService.getAll().subscribe(themas =>{
       this.themas.set(themas);
     });
+    
     console.log(this.selectedThemas);
   }
   toggleThema(selectedThema: ThemaModel, event: Event) {

@@ -25,12 +25,22 @@ export class NewCardPage implements OnInit {
       this.cardService.getById(Number(id)).subscribe({
         next: (card) => {
           this.card.set(card);
+
+          this.themaService.getAll().subscribe({
+            next: (themas) => {
+              const selected = themas.filter((t) => card.themaIds.includes(t.id));
+
+              this.selectedThemas.set(selected);
+            },
+            error: (err) => {
+              console.error(err);
+            },
+          });
         },
         error: (err) => {
-          console.error(err);
+          console.log(id);
         },
       });
-      console.log(id);
     });
   }
   private cardService = inject(CardService);
@@ -82,7 +92,7 @@ export class NewCardPage implements OnInit {
       console.log(data);
     });
   }
-  isEditMode(){
+  isEditMode() {
     return this.card().id !== 0;
   }
 }

@@ -54,11 +54,14 @@ public class CardService {
     }
 
     public CardModel update(CardModel cardModel)throws BadRequestException{
-        var count = _cardRepository.selectOne(cardModel);
-        if(count == 0){
+        if(!_cardRepository.exists(cardModel.getId())){
             throw new BadRequestException("There is no such a card!");
         }
         var cardId = _cardRepository.update(cardModel);
+        _themaCardRepository.unbind(cardId);
+        for(var themaId : cardModel.getThemaIds()){
+            _themaCardRepository.bind(cardId, themaId);
+        }
         return getById(cardId);
     }
 

@@ -53,13 +53,6 @@ public class CardRepository {
                 .query(CardModel.class)
                 .list();
     }
-    public int selectOne(CardModel cardModel) {
-        var count = _jdbc.sql("SELECT COUNT(*) FROM CARDS WHERE ID = :id")
-                .param("id", cardModel.getId())
-                .query(Integer.class)
-                .single();
-        return count;
-    }
     public int update(CardModel cardModel){
         _jdbc.sql("UPDATE CARDS SET WORD = :word, TRANS_WORD = :trans_Word, PLURAL = :plural WHERE ID = :id")
                 .param("word", cardModel.getWord())
