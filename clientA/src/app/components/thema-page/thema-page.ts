@@ -11,6 +11,7 @@ import { FormsModule } from '@angular/forms';
 import { ThemaModel } from '../../Models/thema.model';
 import { ThemaService } from '../../services/thema.service';
 import { RouterLink } from "@angular/router";
+import { NgForOf } from '../../../../node_modules/@angular/common/types/_common_module-chunk';
 
 @Component({
   selector: 'app-thema-page',

@@ -1,34 +1,49 @@
-<div class="input-group mb-3">
-  <input class="form-control" type="text" [(ngModel)]="thema.name" placeholder="Theme name" />
-  <button routerLink="/card" class="btn btn-success">Create a card</button>
-  @if (thema.id === 0) {
-    <button (click)="pressButton()" class="btn btn-warning">Add a new theme</button>
-  } @else {
-    <button (click)="saveEdit()" class="btn btn-primary">Save</button>
-    <button (click)="cancelEdit()" class="btn btn-secondary">Cansel</button>
-    <button (click)="pressDelete()" class="btn btn-danger">Delete</button>
-  }
+<div class="container text-center mt-5">
+  <div class="row">
+    <div class="col text-start">
+      <h1>LanguageCards</h1>
+    </div>
+    <div class="col text-end mt-2">
+      <button routerLink="/card" class="new-card">New card</button>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col text-start">
+      <div class="theme-input">
+        <input
+          class="form-control"
+          type="text"
+          [(ngModel)]="thema.name"
+          placeholder="Name a new theme"
+        />
+      </div>
+      <div class="col text-end">
+        @if (thema.id === 0) {
+          <button (click)="pressButton()" class="new-theme">New theme</button>
+        } @else {
+          <button (click)="saveEdit()" class="btn btn-primary">Save</button>
+          <button (click)="cancelEdit()" class="btn btn-secondary">Cansel</button>
+          <button (click)="pressDelete()" class="btn btn-danger">Delete</button>
+        }
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="theme">
+      @for (themeItem of themas(); track themeItem.id) {
+        <div class="col">
+          <div class="theme-card">
+          <div class="theme-id"># {{ themeItem.id }}</div>
+          <h3>{{ themeItem.name }}</h3>
+          <div class="theme-actions text-center">
+            <button (click)="startEdit(themeItem)" class="theme-rename me-2">Rename</button>
+            <button routerLink="/cards" [queryParams]="{ thema: themeItem.id }" class="theme-open">
+              Open
+            </button>
+            </div>
+          </div>
+        </div>
+        }
+    </div>
+  </div>
 </div>
-<table class="table table-light table-striped">
-  <thead>
-    <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Actions</th>
-    </tr>
-  </thead>
-  <tbody>
-    @for (themeItem of themas(); track themeItem.id) {
-      <tr>
-        <td>{{ themeItem.id }}</td>
-        <td>
-          {{ themeItem.name }}
-        </td>
-        <td>
-          <button (click)="startEdit(themeItem)" class="btn btn-success">Change</button>
-          <button routerLink="/cards" [queryParams]="{thema: themeItem.id}" class="btn btn-success">Open</button>
-        </td>
-      </tr>
-    }
-  </tbody>
-</table>

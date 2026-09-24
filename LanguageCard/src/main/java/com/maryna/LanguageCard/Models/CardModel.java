@@ -1,12 +1,11 @@
 package com.maryna.LanguageCard.Models;
 
 import java.util.LinkedList;
-import java.util.List;
 
 public class CardModel {
     private int id;
     private String word;
-    private String trans_word;
+    private String transWord;
     private String plural;
     private LinkedList<Integer> themaIds = new LinkedList<>();
 
@@ -27,11 +26,11 @@ public class CardModel {
     }
 
     public String getTransWord() {
-        return trans_word;
+        return transWord;
     }
 
     public void setTransWord(String trans_word) {
-        this.trans_word = trans_word;
+        this.transWord = trans_word;
     }
 
     public String getPlural() {

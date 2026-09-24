@@ -52,8 +52,13 @@ public class CardService {
         }
         return cardModel;
     }
-
+    @Transactional()
     public CardModel update(CardModel cardModel)throws BadRequestException{
+        for (var themaId : cardModel.getThemaIds()) {
+            if (!_themaRepository.exists(themaId)) {
+                throw new BadRequestException("There is no such a theme!");
+            }
+        }
         if(!_cardRepository.exists(cardModel.getId())){
             throw new BadRequestException("There is no such a card!");
         }
