@@ -26,14 +26,18 @@ export class CardPage implements OnInit {
     
     ngOnInit(): void {
       this.route.queryParamMap.subscribe(pm => {
-        const themaId = Number(pm.get("thema"));
-        
-        this.cardService.getAll(themaId).subscribe((res) => {
+        const themaId = (pm.get("thema"));
+        if(themaId === "without"){
+          this.cardService.getWithoutIdsThema().subscribe((res) =>{
+            this.cards.set(res);
+          });
+          return;
+        }
+        this.cardService.getAll(Number(themaId)).subscribe((res) => {
           this.cards.set(res);
         });
       })
     }
-  
     //constructor(public client: HttpClient) {}
   
     pressButton() {

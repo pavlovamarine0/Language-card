@@ -53,6 +53,13 @@ public class CardRepository {
                 .query(CardModel.class)
                 .list();
     }
+    public List<CardModel> findThemaIdsIsNull(){
+        return _jdbc.sql("SELECT * FROM CARDS " +
+                        "LEFT JOIN THEMAS_CARDS ON " +
+                        "cards.id = themas_cards.card_id WHERE themas_cards.card_id IS NULL")
+                .query(CardModel.class)
+                .list();
+    }
     public int update(CardModel cardModel){
         _jdbc.sql("UPDATE CARDS SET WORD = :word, TRANS_WORD = :trans_Word, PLURAL = :plural WHERE ID = :id")
                 .param("word", cardModel.getWord())

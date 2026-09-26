@@ -26,6 +26,9 @@ public class CardService {
     public List<CardModel> getAll(int themaId) {
         return _cardRepository.getAll(themaId);
     }
+    public  List<CardModel> findThemaIdsIsNull(){
+        return  _cardRepository.findThemaIdsIsNull();
+    }
 
     public CardModel getById(int id)throws BadRequestException {
         var card = _cardRepository.getById(id);

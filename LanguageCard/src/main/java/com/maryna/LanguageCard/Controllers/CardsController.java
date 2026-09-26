@@ -20,6 +20,10 @@ public class CardsController {
     public List<CardModel> getCards(@RequestParam int themaId) {
         return _cardService.getAll(themaId);
     }
+    @GetMapping("/without-theme")
+    public List<CardModel> getCardsWithoutTheme(){
+        return _cardService.findThemaIdsIsNull();
+    }
 
     @GetMapping("/{id}")
     public CardModel getCard(@PathVariable int id) throws BadRequestException {

@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { ThemaModel } from '../Models/thema.model';
+import { environment } from '../../environment/environment';
 
 @Service()
 export class ThemaService {
-  private readonly url = 'http://localhost:8080/api/themas';
+  private readonly url = environment.apiUrl + 'themas';
   private readonly _client = inject(HttpClient);
   getAll() {
     return this._client.get<ThemaModel[]>(this.url);

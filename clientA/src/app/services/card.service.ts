@@ -1,10 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Service } from '@angular/core';
 import { CardModel } from '../Models/card.model';
+import { environment } from '../../environment/environment';
 
 @Service()
 export class CardService {
-  private readonly url = 'http://localhost:8080/api/cards';
+  private readonly url = environment.apiUrl + 'cards';
   private readonly _client = inject(HttpClient);
   getAll(themaId: number) {
     const params = new HttpParams().append('themaId', themaId);
@@ -22,5 +23,8 @@ export class CardService {
   }
   getById(id: number) {
     return this._client.get<CardModel>(`${this.url}/${id}`);
+  }
+  getWithoutIdsThema(){
+    return this._client.get<CardModel[]>(this.url + '/without-theme');
   }
 }
