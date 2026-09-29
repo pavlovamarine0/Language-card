@@ -2,7 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CardService } from '../../services/card.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CardModel } from '../../Models/card.model';
-import { FormsModule } from '@angular/forms';
+import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ThemaService } from '../../services/thema.service';
 import { ThemaModel } from '../../Models/thema.model';
 import { ToastrService } from 'ngx-toastr';
@@ -11,7 +11,7 @@ import { SelectThemasModal } from '../thema-page/select-themas-modal/select-them
 
 @Component({
   selector: 'app-new-card-page',
-  imports: [FormsModule, RouterLink],
+  imports: [FormsModule, RouterLink, ReactiveFormsModule],
   templateUrl: './new-card-page.html',
   styleUrl: './new-card-page.css',
 })
@@ -50,17 +50,25 @@ export class NewCardPage implements OnInit {
   card = signal<CardModel>(new CardModel());
   selectedThemas = signal<ThemaModel[]>([]);
   route = inject(ActivatedRoute);
+  readonly form = inject(FormBuilder).nonNullable.group({
+    word: ["", [Validators.required, Validators.maxLength(50)]], 
+    transWord: ["", [Validators.required, Validators.maxLength(50)]],
+    plural: ["", [Validators.maxLength(50)]]
+  });
 
   //constructor(public client: HttpClient) {}
 
   createButton() {
-    if (!this.card().word.trim()) {
+    /*if (!this.card().word.trim()) {
       console.log('Not working');
       return;
-    }
+    }*/
     this.card().themaIds = this.selectedThemas().map((t) => t.id);
+    const card = this.form.getRawValue() as CardModel;
+    console.log(this.form.getRawValue());
+    return;
     if (this.isEditMode()) {
-      this.cardService.update(this.card()).subscribe({
+      this.cardService.update(card).subscribe({
         next: (res) => {
           this.card.set(res);
           this.toastr.success('The card is updated!');
@@ -71,7 +79,7 @@ export class NewCardPage implements OnInit {
       });
       return;
     }
-    this.cardService.create(this.card()).subscribe({
+    this.cardService.create(card).subscribe({
       next: (res) => {
         this.card.set(res);
         this.toastr.success('The card is created!');
