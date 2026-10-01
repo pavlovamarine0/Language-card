@@ -1,3 +1,11 @@
 input.ng-touched.ng-invalid{
     border: solid red 2px;
 }
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+body{
+    background-color: rgb(183, 193, 188);
+}

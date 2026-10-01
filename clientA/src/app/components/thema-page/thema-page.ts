@@ -23,7 +23,6 @@ import { NgForOf } from '../../../../node_modules/@angular/common/types/_common_
 export class ThemaPage implements OnInit {
   themaService = inject(ThemaService);
   themas = signal<ThemaModel[]>([]);
-  
   thema = new ThemaModel();
   ngOnInit(): void {
     this.themaService.getAll().subscribe((res) => {

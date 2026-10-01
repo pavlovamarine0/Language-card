@@ -1,3 +1,4 @@
+<body>
 <h1>Create a new card</h1>
 <form [formGroup]="form">
   <!-- Word -->
@@ -8,6 +9,11 @@
   @if(form.controls.word.touched && form.controls.word.errors?.["required"]){
     <div class="text-start ms-2 text-danger">
       Field is required!
+    </div>
+  }
+  @if(form.controls.word.touched && form.controls.word.errors?.["maxLenght"]){
+    <div class="text-start ms-2 text-danger">
+      Maximum 50 characters allowed! 
     </div>
   }
 
@@ -44,10 +50,11 @@
 
     <button type="button" routerLink="/thema" class="btn btn-secondary">Cancel</button>
 
-    @if (card().id) {
+    @if (isEditMode()) {
       <button type="button" (click)="pressDelete()" class="btn btn-danger">Delete</button>
     }
     <h3>Chosen themes</h3>
-    {{ selectedThemas().map((t) => t.name) }}
+    {{ this.selectedThemas().map((t) => t.name) }}
   </div>
 </form>
+</body>

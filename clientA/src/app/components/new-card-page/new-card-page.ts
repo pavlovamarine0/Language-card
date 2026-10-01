@@ -1,13 +1,14 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CardService } from '../../services/card.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CardModel } from '../../Models/card.model';
-import { FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ControlEvent, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ThemaService } from '../../services/thema.service';
 import { ThemaModel } from '../../Models/thema.model';
 import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SelectThemasModal } from '../thema-page/select-themas-modal/select-themas-modal';
+import { toSignal } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-new-card-page',
@@ -24,13 +25,13 @@ export class NewCardPage implements OnInit {
       }
       this.cardService.getById(Number(id)).subscribe({
         next: (card) => {
-          this.card.set(card);
+          this.form.patchValue(card);
 
           this.themaService.getAll().subscribe({
             next: (themas) => {
               const selected = themas.filter((t) => card.themaIds.includes(t.id));
 
-              this.selectedThemas.set(selected);
+              this.form.controls.themas.setValue(selected);
             },
             error: (err) => {
               console.error(err);
@@ -45,43 +46,38 @@ export class NewCardPage implements OnInit {
   }
   private cardService = inject(CardService);
   private themaService = inject(ThemaService);
-  toastr = inject(ToastrService);
+  private toastr = inject(ToastrService);
   private modalService = inject(NgbModal);
-  card = signal<CardModel>(new CardModel());
-  selectedThemas = signal<ThemaModel[]>([]);
-  route = inject(ActivatedRoute);
+  // card = signal<CardModel>(new CardModel());
+  //selectedThemas = signal<ThemaModel[]>([]);
+  private route = inject(ActivatedRoute);
   readonly form = inject(FormBuilder).nonNullable.group({
-    word: ["", [Validators.required, Validators.maxLength(50)]], 
-    transWord: ["", [Validators.required, Validators.maxLength(50)]],
-    plural: ["", [Validators.maxLength(50)]]
+    id: [0],
+    word: ['', [Validators.required, Validators.maxLength(50)]],
+    transWord: ['', [Validators.required, Validators.maxLength(50)]],
+    plural: ['', [Validators.maxLength(50)]],
+    themas: [[] as ThemaModel[]],
   });
-
+ // private readonly events = toSignal(this.form as any, {initialValue: null});
+  readonly selectedThemas = computed(() => {
+   // this.events();
+    return this.form.controls.themas.value
+  });
   //constructor(public client: HttpClient) {}
 
   createButton() {
-    /*if (!this.card().word.trim()) {
-      console.log('Not working');
-      return;
-    }*/
-    this.card().themaIds = this.selectedThemas().map((t) => t.id);
-    const card = this.form.getRawValue() as CardModel;
-    console.log(this.form.getRawValue());
-    return;
+    const card = {
+      ...this.form.getRawValue(),
+      themaIds: this.selectedThemas().map((t) => t.id),
+      themas: undefined,
+    } as CardModel;
     if (this.isEditMode()) {
-      this.cardService.update(card).subscribe({
-        next: (res) => {
-          this.card.set(res);
-          this.toastr.success('The card is updated!');
-        },
-        error: (err) => {
-          console.error(err);
-        },
-      });
+      this.updateCard();
       return;
     }
     this.cardService.create(card).subscribe({
       next: (res) => {
-        this.card.set(res);
+        this.form.patchValue({ ...res, themas: this.selectedThemas()});
         this.toastr.success('The card is created!');
       },
       error: (err) => {
@@ -89,18 +85,34 @@ export class NewCardPage implements OnInit {
       },
     });
   }
+  updateCard() {
+    const card = {
+      ...this.form.getRawValue(),
+      themaIds: this.selectedThemas().map((t) => t.id),
+      themas: undefined,
+    } as CardModel;
+    this.cardService.update(card).subscribe({
+      next: (res) => {
+        this.form.patchValue({ ...res, themas: this.selectedThemas()});
+        this.toastr.success('The card is updated!');
+      },
+      error: (err) => {
+        console.error(err);
+      },
+    });
+  }
   pressDelete() {
-    this.cardService.delete(this.card().id).subscribe(() => {});
+    this.cardService.delete(this.form.controls.id.value).subscribe(() => {});
   }
   themasBtn() {
     const modal = this.modalService.open(SelectThemasModal);
     modal.componentInstance.selectedThemas = this.selectedThemas();
     modal.result.then((data) => {
-      this.selectedThemas.set(data);
+      this.form.controls.themas.setValue(data);
       console.log(data);
     });
   }
   isEditMode() {
-    return this.card().id !== 0;
+    return !!this.form.controls.id.value;
   }
 }
