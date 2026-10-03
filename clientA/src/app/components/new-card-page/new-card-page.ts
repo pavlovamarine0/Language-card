@@ -2,7 +2,14 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CardService } from '../../services/card.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CardModel } from '../../Models/card.model';
-import { ControlEvent, FormBuilder, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  ControlEvent,
+  FormBuilder,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import { ThemaService } from '../../services/thema.service';
 import { ThemaModel } from '../../Models/thema.model';
 import { ToastrService } from 'ngx-toastr';
@@ -56,14 +63,24 @@ export class NewCardPage implements OnInit {
     word: ['', [Validators.required, Validators.maxLength(50)]],
     transWord: ['', [Validators.required, Validators.maxLength(50)]],
     plural: ['', [Validators.maxLength(50)]],
-    themas: [[] as ThemaModel[]],
+    themas: [[] as ThemaModel[], [Validators.required, this.hasTheme]],
   });
- // private readonly events = toSignal(this.form as any, {initialValue: null});
-  readonly selectedThemas = computed(() => {
-   // this.events();
-    return this.form.controls.themas.value
+  public readonly selectedThemas = toSignal(this.form.controls.themas.valueChanges, {
+    initialValue: this.form.controls.themas.value,
   });
+
   //constructor(public client: HttpClient) {}
+  hasTheme(control: AbstractControl) {
+    const value = control.value as ThemaModel[];
+    if (!value) {
+      return null;
+    }
+    return value.length == 3
+      ? {
+          Has3Themas: true,
+        }
+      : null;
+  }
 
   createButton() {
     const card = {
@@ -77,7 +94,7 @@ export class NewCardPage implements OnInit {
     }
     this.cardService.create(card).subscribe({
       next: (res) => {
-        this.form.patchValue({ ...res, themas: this.selectedThemas()});
+        this.form.patchValue({ ...res, themas: this.selectedThemas() });
         this.toastr.success('The card is created!');
       },
       error: (err) => {
@@ -93,7 +110,7 @@ export class NewCardPage implements OnInit {
     } as CardModel;
     this.cardService.update(card).subscribe({
       next: (res) => {
-        this.form.patchValue({ ...res, themas: this.selectedThemas()});
+        this.form.patchValue({ ...res, themas: this.selectedThemas() });
         this.toastr.success('The card is updated!');
       },
       error: (err) => {
@@ -106,9 +123,11 @@ export class NewCardPage implements OnInit {
   }
   themasBtn() {
     const modal = this.modalService.open(SelectThemasModal);
-    modal.componentInstance.selectedThemas = this.selectedThemas();
+    modal.componentInstance.selectedThemas = [...this.selectedThemas()];
     modal.result.then((data) => {
       this.form.controls.themas.setValue(data);
+      this.form.controls.themas.markAsDirty();
+      this.form.controls.themas.markAsTouched();
       console.log(data);
     });
   }

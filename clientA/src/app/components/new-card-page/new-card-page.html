@@ -11,7 +11,7 @@
       Field is required!
     </div>
   }
-  @if(form.controls.word.touched && form.controls.word.errors?.["maxLenght"]){
+  @if(form.controls.word.touched && form.controls.word.errors?.["maxlenght"]){
     <div class="text-start ms-2 text-danger">
       Maximum 50 characters allowed! 
     </div>
@@ -41,6 +41,11 @@
   <!-- Themes -->
   <h3>Choose themes</h3>
   <button (click)="themasBtn()" class="btn btn-success">Choose the themes</button>
+  @if(form.controls.themas.touched && form.controls.themas.errors?.["Has3Themas"]){
+    <div class="text-start ms-2 text-danger">
+      Field is required!
+    </div>
+  }
 
   <br />
 
