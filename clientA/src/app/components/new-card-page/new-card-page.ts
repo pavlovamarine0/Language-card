@@ -51,6 +51,7 @@ export class NewCardPage implements OnInit {
       });
     });
   }
+
   private cardService = inject(CardService);
   private themaService = inject(ThemaService);
   private toastr = inject(ToastrService);
@@ -75,9 +76,9 @@ export class NewCardPage implements OnInit {
     if (!value) {
       return null;
     }
-    return value.length == 3
+    return value.length < 1
       ? {
-          Has3Themas: true,
+          HasNoThemas: true,
         }
       : null;
   }

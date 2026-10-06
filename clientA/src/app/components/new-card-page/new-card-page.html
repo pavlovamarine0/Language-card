@@ -41,9 +41,9 @@
   <!-- Themes -->
   <h3>Choose themes</h3>
   <button (click)="themasBtn()" class="btn btn-success">Choose the themes</button>
-  @if(form.controls.themas.touched && form.controls.themas.errors?.["Has3Themas"]){
+  @if(form.controls.themas.touched && form.controls.themas.errors?.["HasNoThemas"]){
     <div class="text-start ms-2 text-danger">
-      Field is required!
+      You have to choose a theme!
     </div>
   }
 
