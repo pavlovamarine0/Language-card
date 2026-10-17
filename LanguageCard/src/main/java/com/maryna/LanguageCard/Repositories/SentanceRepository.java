@@ -16,8 +16,8 @@ public class SentanceRepository {
     }
     public SentanceModel create(SentanceModel sentanceModel) {
         var keyHolder = new GeneratedKeyHolder();
-        _jdbc.sql("INSERT INTO SENTANCES(TEXT, TRANSLATE) VALUES(:text, :translate) returning id")
-                .param("text", sentanceModel.getText())
+        _jdbc.sql("INSERT INTO SENTENCES(SENTENCE, TRANSLATE) VALUES(:sentence, :translate) returning id")
+                .param("sentence", sentanceModel.getSentence())
                 .param("translate",sentanceModel.getTranslate())
                 .update(keyHolder);
         var id = ((Number)keyHolder.getKeys().get("id")).intValue();
@@ -25,35 +25,36 @@ public class SentanceRepository {
         return sentanceModel;
     }
     public void delete(int id){
-        _jdbc.sql("DELETE FROM SENTANCES WHERE ID = :id")
+        _jdbc.sql("DELETE FROM SENTENCES WHERE ID = :id")
                 .param("id", id)
                 .update();
     }
     public Optional<SentanceModel> getById(int id){
-        return _jdbc.sql("SELECT * FROM SENTANCES WHERE ID = :id")
+        return _jdbc.sql("SELECT * FROM SENTENCES WHERE ID = :id")
                 .param("id", id)
                 .query(SentanceModel.class)
                 .optional();
     }
-    public List<SentanceModel> getAll() {
-        return _jdbc.sql("SELECT * FROM SENTANCES")
+    public List<SentanceModel> getAll(int cardId) {
+        return _jdbc.sql("SELECT s.* FROM SENTENCES s JOIN CARDS_SENTENCES cs " +
+                        "ON cs.SENTENCE_ID = s.ID WHERE cs.CARD_ID = :cardId")
+                .param("cardId", cardId)
                 .query(SentanceModel.class)
                 .list();
     }
     public int update(SentanceModel sentanceModel){
-        _jdbc.sql("UPDATE SENTANCES SET TEXT = :text, TRANSLATE = :translate WHERE ID = :id")
-                .param("text",sentanceModel.getText())
+        _jdbc.sql("UPDATE SENTENCES SET SENTENCE = :sentence, TRANSLATE = :translate WHERE ID = :id")
+                .param("sentence",sentanceModel.getSentence())
                 .param("translate", sentanceModel.getTranslate())
                 .param("id", sentanceModel.getId())
                 .update();
 
         return sentanceModel.getId();
     }
-    public int selectOne(SentanceModel sentanceModel) {
-        var count = _jdbc.sql("SELECT COUNT(*) FROM SENTANCES WHERE ID = :id")
-                .param("id", sentanceModel.getId())
-                .query(Integer.class)
+    public Boolean exists(int sentenceId){
+        return _jdbc.sql("SELECT EXISTS (SELECT 1 FROM SENTENCES WHERE SENTENCE_ID = :id)")
+                .param("id", sentenceId)
+                .query(Boolean.class)
                 .single();
-        return count;
     }
 }

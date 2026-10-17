@@ -2,6 +2,8 @@ import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { CardService } from '../../services/card.service';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { CardModel } from '../../Models/card.model';
+import { forkJoin, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import {
   AbstractControl,
   ControlEvent,
@@ -16,10 +18,13 @@ import { ToastrService } from 'ngx-toastr';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { SelectThemasModal } from '../thema-page/select-themas-modal/select-themas-modal';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { InputField } from '../../core/components/forms/input-field/input-field';
+import { SentenceService } from '../../services/sentence.service';
+import { SentenceModel } from '../../Models/sentence.model';
 
 @Component({
   selector: 'app-new-card-page',
-  imports: [FormsModule, RouterLink, ReactiveFormsModule],
+  imports: [FormsModule, RouterLink, ReactiveFormsModule, InputField],
   templateUrl: './new-card-page.html',
   styleUrl: './new-card-page.css',
 })
@@ -44,6 +49,15 @@ export class NewCardPage implements OnInit {
               console.error(err);
             },
           });
+          this.sentenceService.getAll(Number(id)).subscribe({
+            next: (sentences) => {
+              const saved = sentences.filter((s) => card.sentenceIds.includes(s.id));
+              this.form.controls.sentences.setValue(saved);
+            },
+            error: (err) => {
+              console.error(err);
+            },
+          });
         },
         error: (err) => {
           console.log(id);
@@ -54,22 +68,26 @@ export class NewCardPage implements OnInit {
 
   private cardService = inject(CardService);
   private themaService = inject(ThemaService);
+  private sentenceService = inject(SentenceService);
   private toastr = inject(ToastrService);
   private modalService = inject(NgbModal);
-  // card = signal<CardModel>(new CardModel());
-  //selectedThemas = signal<ThemaModel[]>([]);
   private route = inject(ActivatedRoute);
   readonly form = inject(FormBuilder).nonNullable.group({
     id: [0],
     word: ['', [Validators.required, Validators.maxLength(50)]],
-    transWord: ['', [Validators.required, Validators.maxLength(50)]],
+    translation: ['', [Validators.required, Validators.maxLength(50)]],
     plural: ['', [Validators.maxLength(50)]],
     themas: [[] as ThemaModel[], [Validators.required, this.hasTheme]],
+    sentences: [[] as SentenceModel[]],
   });
   public readonly selectedThemas = toSignal(this.form.controls.themas.valueChanges, {
     initialValue: this.form.controls.themas.value,
   });
-
+  public readonly savedSentences = toSignal(this.form.controls.sentences.valueChanges, {
+    initialValue: this.form.controls.sentences.value,
+  });
+  newSentence = signal('');
+  newTranslate = signal('');
   //constructor(public client: HttpClient) {}
   hasTheme(control: AbstractControl) {
     const value = control.value as ThemaModel[];
@@ -82,13 +100,29 @@ export class NewCardPage implements OnInit {
         }
       : null;
   }
-
+  addSentence() {
+    const sentence = this.newSentence().trim();
+    const translate = this.newTranslate().trim();
+    if (!sentence || !translate) {
+      return;
+    }
+    const newExample = new SentenceModel();
+    newExample.sentence = sentence;
+    newExample.translate = translate;
+    this.form.controls.sentences.setValue([...this.form.controls.sentences.value, newExample]);
+    this.form.controls.sentences.markAsDirty();
+    this.newSentence.set('');
+    this.newTranslate.set('');
+  }
   createButton() {
     const card = {
       ...this.form.getRawValue(),
       themaIds: this.selectedThemas().map((t) => t.id),
       themas: undefined,
+      sentenceIds: this.savedSentences().map((s) => s.id),
+      sentences: undefined,
     } as CardModel;
+    console.log(card);
     if (this.isEditMode()) {
       this.updateCard();
       return;
@@ -108,6 +142,8 @@ export class NewCardPage implements OnInit {
       ...this.form.getRawValue(),
       themaIds: this.selectedThemas().map((t) => t.id),
       themas: undefined,
+      sentenceIds: this.savedSentences().map((s) => s.id),
+      sentences: undefined,
     } as CardModel;
     this.cardService.update(card).subscribe({
       next: (res) => {

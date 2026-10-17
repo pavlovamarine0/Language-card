@@ -37,7 +37,7 @@ public class CardService {
         }
         var cardModel = card.get();
         cardModel.setThemaIds(new LinkedList<>(_themaCardRepository.getThemaIds(id)));
-
+        cardModel.setSentenceIds(_cardSentanceRepository.getSentenceIds(id));
         return cardModel;
     }
 
@@ -48,8 +48,15 @@ public class CardService {
                 throw new BadRequestException("There is no such a theme!");
             }
         }
+        for (var sentenceId : cardModel.getSentenceIds()) {
+            if (!_cardSentanceRepository.exists(sentenceId)) {
+                throw new BadRequestException("There is no such a sentence!");
+            }
+        }
         cardModel = _cardRepository.create(cardModel);
-
+        for (var sentenseId : cardModel.getSentenceIds()) {
+            _cardSentanceRepository.bind(sentenseId, cardModel.getId());
+        }
         for (var themaId : cardModel.getThemaIds()) {
             _themaCardRepository.bind(cardModel.getId(), themaId);
         }
@@ -67,14 +74,18 @@ public class CardService {
         }
         var cardId = _cardRepository.update(cardModel);
         _themaCardRepository.unbind(cardId);
+        _cardSentanceRepository.unbind(cardId);
         for(var themaId : cardModel.getThemaIds()){
             _themaCardRepository.bind(cardId, themaId);
+        }
+        for(var sentenceId : cardModel.getSentenceIds()){
+            _themaCardRepository.bind(sentenceId, cardId);
         }
         return getById(cardId);
     }
 
     public void delete(int id)throws BadRequestException{
-        if(_cardSentanceRepository.exists(id)){
+        if(_cardSentanceRepository.existsByCard(id)){
             throw new BadRequestException("This card has saved sentences!");
         }
         _cardRepository.delete(id);

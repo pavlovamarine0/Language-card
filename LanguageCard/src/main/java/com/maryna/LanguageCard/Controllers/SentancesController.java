@@ -15,8 +15,8 @@ public class SentancesController {
         _sentanceService = sentanceService;
     }
     @GetMapping()
-    public List<SentanceModel> getSentances() {
-        return _sentanceService.getAll();
+    public List<SentanceModel> getSentances(@RequestParam int cardId) {
+        return _sentanceService.getAll(cardId);
     }
 
     @GetMapping("/{id}")

@@ -1,13 +1,15 @@
 package com.maryna.LanguageCard.Models;
 
 import java.util.LinkedList;
+import java.util.List;
 
 public class CardModel {
     private int id;
     private String word;
-    private String transWord;
+    private String translation;
     private String plural;
     private LinkedList<Integer> themaIds = new LinkedList<>();
+    private List<Integer> sentenceIds = List.of();
 
     public int getId() {
         return id;
@@ -25,12 +27,12 @@ public class CardModel {
         this.word = word;
     }
 
-    public String getTransWord() {
-        return transWord;
+    public String getTranslation() {
+        return translation;
     }
 
-    public void setTransWord(String trans_word) {
-        this.transWord = trans_word;
+    public void setTranslation(String trans_word) {
+        this.translation = trans_word;
     }
 
     public String getPlural() {
@@ -47,5 +49,13 @@ public class CardModel {
 
     public void setThemaIds(LinkedList<Integer> themaIds) {
         this.themaIds = themaIds;
+    }
+
+    public List<Integer> getSentenceIds() {
+        return sentenceIds;
+    }
+
+    public void setSentenceIds(List<Integer> sentenceIds) {
+        this.sentenceIds = sentenceIds;
     }
 }

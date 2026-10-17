@@ -20,8 +20,8 @@ public class SentanceService {
         _cardSentanceRepository = cardSentanceRepository;
     }
 
-    public List<SentanceModel> getAll() {
-        return _sentanceRepository.getAll();
+    public List<SentanceModel> getAll(int cardId) {
+        return _sentanceRepository.getAll(cardId);
     }
 
     public SentanceModel getById(int id) throws BadRequestException {
@@ -38,7 +38,7 @@ public class SentanceService {
             throw new BadRequestException("There is no such a card!");
         }
         sentanceModel = _sentanceRepository.create(sentanceModel);
-        _cardSentanceRepository.bind(sentanceModel, cardId);
+        _cardSentanceRepository.bind(sentanceModel.getId(), cardId);
         return sentanceModel;
     }
 
@@ -47,8 +47,7 @@ public class SentanceService {
     }
 
     public SentanceModel update(SentanceModel sentanceModel) throws BadRequestException {
-        var count = _sentanceRepository.selectOne(sentanceModel);
-        if (count == 0) {
+        if (!_sentanceRepository.exists(sentanceModel.getId())) {
             throw new BadRequestException("There is no such a sentence!");
         }
         var sentenceId = _sentanceRepository.update(sentanceModel);

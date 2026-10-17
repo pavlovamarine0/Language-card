@@ -1,0 +1,14 @@
+<div>
+    <label [for]="id()">{{title()}}</label>
+    <input [id]="id()" [placeholder]="placeholder()" [formControl]="control()"/>
+  </div>
+ @if(control().touched && control().errors?.["required"]){
+    <div class="text-start ms-2 text-danger">
+      Field is required!
+    </div>
+  }
+  @if(control().touched && control().errors?.["maxlength"]){
+    <div class="text-start ms-2 text-danger">
+      Maximum 50 characters allowed! 
+    </div>
+  } 

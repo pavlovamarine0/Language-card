@@ -19,11 +19,12 @@ import { ThemaModel } from '../../Models/thema.model';
 import { ThemaService } from '../../services/thema.service';
 import { RouterLink } from '@angular/router';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { InputField } from '../../core/components/forms/input-field/input-field';
 
 @Component({
   selector: 'app-thema-page',
   standalone: true,
-  imports: [FormsModule, RouterLink, ReactiveFormsModule],
+  imports: [FormsModule, RouterLink, ReactiveFormsModule, InputField],
   templateUrl: './thema-page.html',
   styleUrl: './thema-page.css',
 })
