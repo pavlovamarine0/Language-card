@@ -49,7 +49,7 @@ export class NewCardPage implements OnInit {
               console.error(err);
             },
           });
-          this.sentenceService.getAll(Number(id)).subscribe({
+          this.sentenceService.getAllByCardId(Number(id)).subscribe({
             next: (sentences) => {
               const saved = sentences.filter((s) => card.sentenceIds.includes(s.id));
               this.form.controls.sentences.setValue(saved);
@@ -115,13 +115,17 @@ export class NewCardPage implements OnInit {
     this.newTranslate.set('');
   }
   createButton() {
-    const card = {
-      ...this.form.getRawValue(),
-      themaIds: this.selectedThemas().map((t) => t.id),
-      themas: undefined,
-      sentenceIds: this.savedSentences().map((s) => s.id),
-      sentences: undefined,
-    } as CardModel;
+  const card = {
+  ...this.form.getRawValue(),
+  themaIds: this.selectedThemas().map((t) => t.id),
+  sentences: this.savedSentences().map((s) => ({
+    sentence: s.sentence,
+    translate: s.translate,
+  })),
+  themas: undefined,
+  sentenceIds: undefined,
+} as CardModel;
+    
     console.log(card);
     if (this.isEditMode()) {
       this.updateCard();
@@ -129,7 +133,7 @@ export class NewCardPage implements OnInit {
     }
     this.cardService.create(card).subscribe({
       next: (res) => {
-        this.form.patchValue({ ...res, themas: this.selectedThemas() });
+        this.form.patchValue({ ...res, themas: this.selectedThemas(), sentences: res.sentences ?? []});
         this.toastr.success('The card is created!');
       },
       error: (err) => {
@@ -147,7 +151,7 @@ export class NewCardPage implements OnInit {
     } as CardModel;
     this.cardService.update(card).subscribe({
       next: (res) => {
-        this.form.patchValue({ ...res, themas: this.selectedThemas() });
+        this.form.patchValue({ ...res, themas: this.selectedThemas(), sentences: this.savedSentences()});
         this.toastr.success('The card is updated!');
       },
       error: (err) => {

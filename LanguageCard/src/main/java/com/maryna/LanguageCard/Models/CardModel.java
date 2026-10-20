@@ -10,6 +10,7 @@ public class CardModel {
     private String plural;
     private LinkedList<Integer> themaIds = new LinkedList<>();
     private List<Integer> sentenceIds = List.of();
+    private List<SentanceModel> sentences;
 
     public int getId() {
         return id;
@@ -57,5 +58,13 @@ public class CardModel {
 
     public void setSentenceIds(List<Integer> sentenceIds) {
         this.sentenceIds = sentenceIds;
+    }
+
+    public List<SentanceModel> getSentences() {
+        return sentences;
+    }
+
+    public void setSentences(List<SentanceModel> sentences) {
+        this.sentences = sentences;
     }
 }

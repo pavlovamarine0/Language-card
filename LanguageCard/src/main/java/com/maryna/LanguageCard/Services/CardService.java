@@ -15,12 +15,14 @@ public class CardService {
     private final ThemaRepository _themaRepository;
     private final ThemaCardRepository _themaCardRepository;
     private final CardSentanceRepository _cardSentanceRepository;
+    private final SentanceRepository _sentenceRepository;
     public CardService(CardRepository cardRepository, ThemaRepository themaRepository, ThemaCardRepository themaCard,
-                       CardSentanceRepository cardSentanceRepository) {
+                       CardSentanceRepository cardSentanceRepository, SentanceRepository sentenceRepository) {
         _cardRepository = cardRepository;
         _themaRepository = themaRepository;
         _themaCardRepository = themaCard;
         _cardSentanceRepository = cardSentanceRepository;
+        _sentenceRepository = sentenceRepository;
     }
 
     public List<CardModel> getAll(int themaId) {
@@ -48,17 +50,15 @@ public class CardService {
                 throw new BadRequestException("There is no such a theme!");
             }
         }
-        for (var sentenceId : cardModel.getSentenceIds()) {
-            if (!_cardSentanceRepository.exists(sentenceId)) {
-                throw new BadRequestException("There is no such a sentence!");
-            }
-        }
         cardModel = _cardRepository.create(cardModel);
-        for (var sentenseId : cardModel.getSentenceIds()) {
-            _cardSentanceRepository.bind(sentenseId, cardModel.getId());
-        }
         for (var themaId : cardModel.getThemaIds()) {
             _themaCardRepository.bind(cardModel.getId(), themaId);
+        }
+        if (cardModel.getSentences() != null) {
+            for (var sentense : cardModel.getSentences()) {
+                var savedSentences = _sentenceRepository.create(sentense);
+                _cardSentanceRepository.bind(savedSentences.getId(), cardModel.getId());
+            }
         }
         return cardModel;
     }
@@ -79,7 +79,7 @@ public class CardService {
             _themaCardRepository.bind(cardId, themaId);
         }
         for(var sentenceId : cardModel.getSentenceIds()){
-            _themaCardRepository.bind(sentenceId, cardId);
+            _cardSentanceRepository.bind(sentenceId, cardId);
         }
         return getById(cardId);
     }

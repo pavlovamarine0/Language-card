@@ -7,9 +7,12 @@ import { environment } from '../../environment/environment';
 export class SentenceService {
   private readonly url = environment.apiUrl + 'sentence';
   private readonly _client = inject(HttpClient);
-  getAll(cardId: number) {
+  getAllByCardId(cardId: number) {
     const params = new HttpParams().append('cardId', cardId);
     return this._client.get<SentenceModel[]>(this.url, { params });
+  }
+  getAll() {
+    return this._client.get<SentenceModel[]>(this.url);
   }
 
   create(sentence: SentenceModel, cardId: number) {

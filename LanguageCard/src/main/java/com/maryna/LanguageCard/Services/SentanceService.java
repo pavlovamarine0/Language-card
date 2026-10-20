@@ -1,5 +1,6 @@
 package com.maryna.LanguageCard.Services;
 
+import com.maryna.LanguageCard.Models.GetSentencesRequestModel;
 import com.maryna.LanguageCard.Models.SentanceModel;
 import com.maryna.LanguageCard.Repositories.*;
 import jakarta.transaction.Transactional;
@@ -20,8 +21,13 @@ public class SentanceService {
         _cardSentanceRepository = cardSentanceRepository;
     }
 
-    public List<SentanceModel> getAll(int cardId) {
-        return _sentanceRepository.getAll(cardId);
+    public List<SentanceModel> getAll(GetSentencesRequestModel request) {
+        if(request.cardId() != 0){
+            return _sentanceRepository.getAllByCardId(request.cardId());
+        }
+        if(!request.keyWord().isBlank()){
+            
+        }
     }
 
     public SentanceModel getById(int id) throws BadRequestException {
@@ -32,13 +38,13 @@ public class SentanceService {
         return sentence.get();
     }
 
+
     @Transactional()
     public SentanceModel create(SentanceModel sentanceModel, int cardId) throws BadRequestException {
         if (!_cardRepository.exists(cardId)) {
             throw new BadRequestException("There is no such a card!");
         }
         sentanceModel = _sentanceRepository.create(sentanceModel);
-        _cardSentanceRepository.bind(sentanceModel.getId(), cardId);
         return sentanceModel;
     }
 

@@ -1,5 +1,6 @@
 package com.maryna.LanguageCard.Controllers;
 
+import com.maryna.LanguageCard.Models.GetSentencesRequestModel;
 import com.maryna.LanguageCard.Models.SentanceModel;
 import com.maryna.LanguageCard.Services.SentanceService;
 import org.apache.coyote.BadRequestException;
@@ -15,8 +16,8 @@ public class SentancesController {
         _sentanceService = sentanceService;
     }
     @GetMapping()
-    public List<SentanceModel> getSentances(@RequestParam int cardId) {
-        return _sentanceService.getAll(cardId);
+    public List<SentanceModel> getSentances(@RequestParam GetSentencesRequestModel getSentencesRequestModel) {
+        return _sentanceService.getAll(getSentencesRequestModel);
     }
 
     @GetMapping("/{id}")

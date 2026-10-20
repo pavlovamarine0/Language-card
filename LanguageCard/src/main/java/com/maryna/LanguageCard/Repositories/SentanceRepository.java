@@ -1,5 +1,6 @@
 package com.maryna.LanguageCard.Repositories;
 
+import com.maryna.LanguageCard.Models.GetSentencesRequestModel;
 import com.maryna.LanguageCard.Models.SentanceModel;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
@@ -14,6 +15,7 @@ public class SentanceRepository {
     public SentanceRepository(JdbcClient jdbcClient){
         _jdbc = jdbcClient;
     }
+
     public SentanceModel create(SentanceModel sentanceModel) {
         var keyHolder = new GeneratedKeyHolder();
         _jdbc.sql("INSERT INTO SENTENCES(SENTENCE, TRANSLATE) VALUES(:sentence, :translate) returning id")
@@ -35,10 +37,16 @@ public class SentanceRepository {
                 .query(SentanceModel.class)
                 .optional();
     }
-    public List<SentanceModel> getAll(int cardId) {
+    public List<SentanceModel> getAllByCardId(int cardId) {
         return _jdbc.sql("SELECT s.* FROM SENTENCES s JOIN CARDS_SENTENCES cs " +
                         "ON cs.SENTENCE_ID = s.ID WHERE cs.CARD_ID = :cardId")
                 .param("cardId", cardId)
+                .query(SentanceModel.class)
+                .list();
+    }
+    public List<SentanceModel> getAllByKeyWord(String keyWord) {
+        return _jdbc.sql("SELECT * FROM SENTENCES WHERE sentence LIKE :keyWord")
+                .param("keyWord", "%"+ keyWord +"%")
                 .query(SentanceModel.class)
                 .list();
     }
@@ -52,7 +60,7 @@ public class SentanceRepository {
         return sentanceModel.getId();
     }
     public Boolean exists(int sentenceId){
-        return _jdbc.sql("SELECT EXISTS (SELECT 1 FROM SENTENCES WHERE SENTENCE_ID = :id)")
+        return _jdbc.sql("SELECT EXISTS (SELECT 1 FROM SENTENCES WHERE ID = :id)")
                 .param("id", sentenceId)
                 .query(Boolean.class)
                 .single();
