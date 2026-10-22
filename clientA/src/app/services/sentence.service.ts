@@ -14,6 +14,11 @@ export class SentenceService {
   getAll() {
     return this._client.get<SentenceModel[]>(this.url);
   }
+  getAllByKeyWord(keyWord: string) {
+  return this._client.get<SentenceModel[]>(
+    `${this.url}?keyWord=${encodeURIComponent(keyWord)}`
+  );
+}
 
   create(sentence: SentenceModel, cardId: number) {
      const params = new HttpParams().set('cardId', cardId);

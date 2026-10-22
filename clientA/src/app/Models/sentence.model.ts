@@ -1,6 +1,6 @@
 export class SentenceModel {
     id = 0;
     sentence = "";
-    translate = "";
+    translation = "";
     cardIds :number[] = []; 
 }

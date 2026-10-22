@@ -21,6 +21,7 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { InputField } from '../../core/components/forms/input-field/input-field';
 import { SentenceService } from '../../services/sentence.service';
 import { SentenceModel } from '../../Models/sentence.model';
+import { SelectSentencesModal } from '../sentences/select-sentences-modal/select-sentences-modal';
 
 @Component({
   selector: 'app-new-card-page',
@@ -83,7 +84,7 @@ export class NewCardPage implements OnInit {
   public readonly selectedThemas = toSignal(this.form.controls.themas.valueChanges, {
     initialValue: this.form.controls.themas.value,
   });
-  public readonly savedSentences = toSignal(this.form.controls.sentences.valueChanges, {
+  public readonly selectedSentences = toSignal(this.form.controls.sentences.valueChanges, {
     initialValue: this.form.controls.sentences.value,
   });
   newSentence = signal('');
@@ -108,24 +109,21 @@ export class NewCardPage implements OnInit {
     }
     const newExample = new SentenceModel();
     newExample.sentence = sentence;
-    newExample.translate = translate;
+    newExample.translation = translate;
     this.form.controls.sentences.setValue([...this.form.controls.sentences.value, newExample]);
     this.form.controls.sentences.markAsDirty();
     this.newSentence.set('');
     this.newTranslate.set('');
   }
   createButton() {
-  const card = {
-  ...this.form.getRawValue(),
-  themaIds: this.selectedThemas().map((t) => t.id),
-  sentences: this.savedSentences().map((s) => ({
-    sentence: s.sentence,
-    translate: s.translate,
-  })),
-  themas: undefined,
-  sentenceIds: undefined,
-} as CardModel;
-    
+    const card = {
+      ...this.form.getRawValue(),
+      themaIds: this.selectedThemas().map((t) => t.id),
+      sentenceIds: this.selectedSentences().map((s) => s.id),
+      themas: undefined,
+      sentences: [],
+    } as CardModel;
+
     console.log(card);
     if (this.isEditMode()) {
       this.updateCard();
@@ -133,7 +131,11 @@ export class NewCardPage implements OnInit {
     }
     this.cardService.create(card).subscribe({
       next: (res) => {
-        this.form.patchValue({ ...res, themas: this.selectedThemas(), sentences: res.sentences ?? []});
+        this.form.patchValue({
+          ...res,
+          themas: this.selectedThemas(),
+          sentences: res.sentences ?? [],
+        });
         this.toastr.success('The card is created!');
       },
       error: (err) => {
@@ -146,12 +148,16 @@ export class NewCardPage implements OnInit {
       ...this.form.getRawValue(),
       themaIds: this.selectedThemas().map((t) => t.id),
       themas: undefined,
-      sentenceIds: this.savedSentences().map((s) => s.id),
+      sentenceIds: this.selectedSentences().map((s) => s.id),
       sentences: undefined,
     } as CardModel;
     this.cardService.update(card).subscribe({
       next: (res) => {
-        this.form.patchValue({ ...res, themas: this.selectedThemas(), sentences: this.savedSentences()});
+        this.form.patchValue({
+          ...res,
+          themas: this.selectedThemas(),
+          sentences: this.selectedSentences(),
+        });
         this.toastr.success('The card is updated!');
       },
       error: (err) => {
@@ -169,6 +175,17 @@ export class NewCardPage implements OnInit {
       this.form.controls.themas.setValue(data);
       this.form.controls.themas.markAsDirty();
       this.form.controls.themas.markAsTouched();
+      console.log(data);
+    });
+  }
+  sentencesBtn() {
+    const modal = this.modalService.open(SelectSentencesModal);
+    modal.componentInstance.keyWord = this.form.controls.word.value;
+    modal.componentInstance.cardId = this.form.controls.id.value;
+    modal.result.then((data) => {
+      this.form.controls.sentences.setValue(data);
+      this.form.controls.sentences.markAsDirty();
+      this.form.controls.sentences.markAsTouched();
       console.log(data);
     });
   }

@@ -25,9 +25,10 @@ public class SentanceService {
         if(request.cardId() != 0){
             return _sentanceRepository.getAllByCardId(request.cardId());
         }
-        if(!request.keyWord().isBlank()){
-            
+        if(!request.keyWord().isBlank()) {
+            return _sentanceRepository.getAllByKeyWord(request.keyWord());
         }
+        return List.of();
     }
 
     public SentanceModel getById(int id) throws BadRequestException {

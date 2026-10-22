@@ -6,5 +6,6 @@ export class CardModel {
     translation = "";
     plural = "";
     themaIds :number[] = [];
+    sentenceIds : number[] = [];
     sentences : SentenceModel[] = [];
 }

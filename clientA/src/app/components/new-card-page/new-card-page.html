@@ -37,7 +37,7 @@
     </div>
 
     <div class="mt-3">
-      @for (example of savedSentences(); track $index) {
+      @for (example of selectedSentences(); track $index) {
         <div class="border rounded p-2 mb-2">
           <strong>{{ example.sentence }}</strong>
           <p>{{ example.translate }}</p>
@@ -45,10 +45,18 @@
       }
     </div>
     <br />
+    <h3>Chosen themes</h3>
+      {{ this.selectedThemas().map((t) => t.name) }}
     <h3>Choose themes</h3>
     <button (click)="themasBtn()" class="btn btn-success">Choose the themes</button>
     @if (form.controls.themas.touched && form.controls.themas.errors?.['HasNoThemas']) {
-      <div class="text-start ms-2 text-danger">You hav e to choose a theme!</div>
+      <div class="text-start ms-2 text-danger">You have to choose a theme!</div>
+    }
+     <h3>Examples</h3>
+      {{ this.selectedSentences().map((s) => s.sentence) }}
+    <button (click)="sentencesBtn()" class="btn btn-success">Add a new sentence</button>
+    {
+      <div class="text-start ms-2 text-danger">You have to choose a theme!</div>
     }
     <br />
     <div>
@@ -66,10 +74,6 @@
       @if (isEditMode()) {
         <button type="button" (click)="pressDelete()" class="btn btn-danger">Delete</button>
       }
-      <h3>Chosen themes</h3>
-      {{ this.selectedThemas().map((t) => t.name) }}
-      <h3>Examples</h3>
-      {{ this.savedSentences().map((s) => s.sentence) }}
     </div>
   </form>
 </body>
