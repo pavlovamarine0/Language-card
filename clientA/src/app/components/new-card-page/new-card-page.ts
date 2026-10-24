@@ -147,9 +147,9 @@ export class NewCardPage implements OnInit {
     const card = {
       ...this.form.getRawValue(),
       themaIds: this.selectedThemas().map((t) => t.id),
-      themas: undefined,
       sentenceIds: this.selectedSentences().map((s) => s.id),
-      sentences: undefined,
+      themas: undefined,
+      sentences: [],
     } as CardModel;
     this.cardService.update(card).subscribe({
       next: (res) => {

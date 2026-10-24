@@ -10,11 +10,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class SentanceService {
+public class SentenceService {
     private final SentanceRepository _sentanceRepository;
     private final CardRepository _cardRepository;
     private final CardSentanceRepository _cardSentanceRepository;
-    public SentanceService(SentanceRepository sentenceCreate,  CardRepository cardRepository, CardSentanceRepository
+    public SentenceService(SentanceRepository sentenceCreate, CardRepository cardRepository, CardSentanceRepository
                            cardSentanceRepository) {
         _sentanceRepository = sentenceCreate;
         _cardRepository = cardRepository;
