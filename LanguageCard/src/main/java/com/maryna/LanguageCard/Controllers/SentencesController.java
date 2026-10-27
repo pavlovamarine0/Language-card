@@ -26,9 +26,9 @@ public class SentencesController {
     }
 
     @PostMapping()
-    public SentanceModel createSentence(@RequestBody SentanceModel sentanceModel, @RequestParam int cardId)
+    public SentanceModel createSentence(@RequestBody SentanceModel sentanceModel)
             throws BadRequestException {
-        return _Sentenceservice.create(sentanceModel, cardId);
+        return _Sentenceservice.create(sentanceModel);
     }
 
     @PutMapping()

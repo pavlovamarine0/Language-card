@@ -101,7 +101,7 @@ export class NewCardPage implements OnInit {
         }
       : null;
   }
-  addSentence() {
+  /*addSentence() {
     const sentence = this.newSentence().trim();
     const translate = this.newTranslate().trim();
     if (!sentence || !translate) {
@@ -114,7 +114,7 @@ export class NewCardPage implements OnInit {
     this.form.controls.sentences.markAsDirty();
     this.newSentence.set('');
     this.newTranslate.set('');
-  }
+  }*/
   createButton() {
     const card = {
       ...this.form.getRawValue(),
@@ -134,9 +134,10 @@ export class NewCardPage implements OnInit {
         this.form.patchValue({
           ...res,
           themas: this.selectedThemas(),
-          sentences: res.sentences ?? [],
+          sentences: this.selectedSentences(),
         });
         this.toastr.success('The card is created!');
+        console.log(res);
       },
       error: (err) => {
         console.error(err);
@@ -166,7 +167,9 @@ export class NewCardPage implements OnInit {
     });
   }
   pressDelete() {
-    this.cardService.delete(this.form.controls.id.value).subscribe(() => {});
+    this.cardService.delete(this.form.controls.id.value).subscribe(() => {
+      this.toastr.success('The card is deleted!');
+    });
   }
   themasBtn() {
     const modal = this.modalService.open(SelectThemasModal);
@@ -182,6 +185,7 @@ export class NewCardPage implements OnInit {
     const modal = this.modalService.open(SelectSentencesModal);
     modal.componentInstance.keyWord = this.form.controls.word.value;
     modal.componentInstance.cardId = this.form.controls.id.value;
+    //modal.componentInstance.allSentences = [...this.selectedSentences()];
     modal.result.then((data) => {
       this.form.controls.sentences.setValue(data);
       this.form.controls.sentences.markAsDirty();

@@ -22,7 +22,7 @@ export class SelectSentencesModal implements OnInit {
   readonly form = inject(FormBuilder).nonNullable.group({
     id: [0],
     sentence: ['', [Validators.required, Validators.maxLength(150)]],
-    translation: ['', [Validators.required, Validators.maxLength(150)]],
+    translate: ['', [Validators.required, Validators.maxLength(150)]],
   });
   ngOnInit(): void {
     if (!this.cardId) {
@@ -52,16 +52,14 @@ export class SelectSentencesModal implements OnInit {
     }
   }
   saveBtn() {
-    this.modal.close(this.allSentences);
-  }
-  addSentence() {
     const newExample = this.form.getRawValue() as SentenceModel;
-    this.sentenceService.create(newExample, this.cardId).subscribe({
+    this.sentenceService.create(newExample).subscribe({
       next: (res) => {
         this.form.patchValue(res);
         this.form.markAsDirty();
         this.allSentences.update((s) => [...s, res]);
         this.form.reset();
+        this.modal.close(this.allSentences());
       },
     });
   }

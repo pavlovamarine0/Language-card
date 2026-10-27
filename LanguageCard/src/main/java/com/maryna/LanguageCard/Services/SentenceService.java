@@ -41,10 +41,7 @@ public class SentenceService {
 
 
     @Transactional()
-    public SentanceModel create(SentanceModel sentanceModel, int cardId) throws BadRequestException {
-        if (!_cardRepository.exists(cardId)) {
-            throw new BadRequestException("There is no such a card!");
-        }
+    public SentanceModel create(SentanceModel sentanceModel) throws BadRequestException {
         sentanceModel = _sentanceRepository.create(sentanceModel);
         return sentanceModel;
     }

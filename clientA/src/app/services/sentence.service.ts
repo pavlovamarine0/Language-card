@@ -5,7 +5,7 @@ import { environment } from '../../environment/environment';
 
 @Service()
 export class SentenceService {
-  private readonly url = environment.apiUrl + 'sentence';
+  private readonly url = environment.apiUrl + 'sentences';
   private readonly _client = inject(HttpClient);
   getAllByCardId(cardId: number) {
     const params = new HttpParams().append('cardId', cardId);
@@ -20,9 +20,9 @@ export class SentenceService {
   );
 }
 
-  create(sentence: SentenceModel, cardId: number) {
-     const params = new HttpParams().set('cardId', cardId);
-    return this._client.post<SentenceModel>(this.url, sentence, {params});
+  create(sentence: SentenceModel) {
+    
+    return this._client.post<SentenceModel>(this.url, sentence);
   }
   delete(id: number) {
     return this._client.delete<void>(`${this.url}/${id}`);
