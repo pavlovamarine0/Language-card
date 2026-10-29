@@ -14,7 +14,6 @@ export class SelectThemasModal implements OnInit {
   themas = signal<ThemaModel[]>([]);
   selectedThemas : ThemaModel[] =[];
   modal = inject(NgbActiveModal);
-  isChecked = true;
   ngOnInit(): void {
     this.themaService.getAll().subscribe(themas =>{
       this.themas.set(themas);

@@ -1,59 +1,58 @@
 <body>
-
-<div class="container text-center mt-5">
-  <div class="row">
-    <div class="col text-start">
-      <h1>LanguageCards</h1>
-    </div>
-    <div class="col text-end mt-2">
-      <button routerLink="/card" class="new-card">New card</button>
-      <button routerLink="/cards" [queryParams]="{ thema: 'without' }" class="new-card">All cards without themes</button>
-    </div>
-  </div>
-  <div class="row">
-    <div class="col text-start">
-      <div class="theme-input">
-        <input
-          class="form-control"
-          type="text"
-          [formControl]="form.controls.name"
-          placeholder="Name a new theme"
-        />
+  <div class="container text-center mt-5">
+    <div class="row">
+      <div class="col text-start">
+        <h1>LanguageCards</h1>
       </div>
-      @if(form.controls.name.touched && form.controls.name.errors?.["required"]){
-    <div class="text-start ms-2 text-danger">
-      Field is required!
-    </div>
-  }
-      <div class="col text-end">
-        @if (form.controls.id.value === 0) {
-          <button (click)="pressButton()" [disabled]="form.invalid" class="new-theme">New theme</button>
-        } @else {
-          <button (click)="saveEdit()" class="btn btn-primary">Save</button>
-          <button (click)="cancelEdit()" class="btn btn-secondary">Cansel</button>
-          <button (click)="pressDelete()" class="btn btn-danger">Delete</button>
-        }
+      <div class="col text-end mt-2">
+        <button routerLink="/card" class="new-card">New card</button>
+        <button routerLink="/cards" [queryParams]="{ thema: 'without' }" class="new-card">
+          All cards without themes
+        </button>
       </div>
     </div>
-  </div>
-  <div class="row">
-    <div class="theme">
-      @for (themeItem of themas(); track themeItem.id) {
-        <div class="col">
-          <div class="theme-card">
-          <div class="theme-id"># {{ themeItem.id }}</div>
-          <h3>{{ themeItem.name }}</h3>
-          <div class="theme-actions text-center">
-            <button (click)="startEdit(themeItem)" class="theme-rename me-2">Rename</button>
-            <button routerLink="/cards" [queryParams]="{ thema: themeItem.id }" class="theme-open">
-              Open
-            </button>
-            </div>
+    <div class="row">
+      <div class="col text-start">
+        <div class="theme-input">
+          <app-input-field
+            title="Name a new theme"
+            [control]="form.controls.name"
+          />
+          <div class="col text-end">
+            @if (form.controls.id.value === 0) {
+              <button (click)="pressButton()" [disabled]="form.invalid" class="new-theme">
+                New theme
+              </button>
+            } @else {
+              <button (click)="saveEdit()" class="btn btn-primary">Save</button>
+              <button (click)="cancelEdit()" class="btn btn-secondary">Cansel</button>
+              <button (click)="pressDelete()" class="btn btn-danger">Delete</button>
+            }
           </div>
         </div>
-        }
+      </div>
+      <div class="row">
+        <div class="theme">
+          @for (themeItem of themas(); track themeItem.id) {
+            <div class="col">
+              <div class="theme-card">
+                <div class="theme-id"># {{ themeItem.id }}</div>
+                <h3>{{ themeItem.name }}</h3>
+                <div class="theme-actions text-center">
+                  <button (click)="startEdit(themeItem)" class="theme-rename me-2">Rename</button>
+                  <button
+                    routerLink="/cards"
+                    [queryParams]="{ thema: themeItem.id }"
+                    class="theme-open"
+                  >
+                    Open
+                  </button>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
     </div>
   </div>
-</div>
-
 </body>

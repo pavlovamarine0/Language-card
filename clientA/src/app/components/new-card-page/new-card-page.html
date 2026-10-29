@@ -1,65 +1,74 @@
 <body>
-<h1>Create a new card</h1>
-<form [formGroup]="form">
-  <!-- Word -->
-  <div>
-    <label for="word">Word:</label>
-    <input id="word" [formControl]="form.controls.word" placeholder="Write the word" />
-  </div>
-  @if(form.controls.word.touched && form.controls.word.errors?.["required"]){
-    <div class="text-start ms-2 text-danger">
-      Field is required!
-    </div>
-  }
-  @if(form.controls.word.touched && form.controls.word.errors?.["maxlenght"]){
-    <div class="text-start ms-2 text-danger">
-      Maximum 50 characters allowed! 
-    </div>
-  }
-
-  <br />
-
-  <!-- Translation -->
-  <div>
-    <label for="translate">Translation:</label>
-    <input id="translate" [formControl]="form.controls.transWord" placeholder="Write the translation" />
-  </div>
-
-  <br />
-
-  <!-- Plural -->
-  <div>
-    <label for="plural">Plural:</label>
-    <input
-      id="plural" [formControl]="form.controls.plural"
-      placeholder="Write the plural form of the word"
+  <h1>Create a new card</h1>
+  <form [formGroup]="form">
+    <app-input-field title="word" placeholder="Write the word" [control]="form.controls.word" />
+    <app-input-field
+      title="translation"
+      placeholder="Write the translation"
+      [control]="form.controls.translation"
     />
-  </div>
+    <app-input-field
+      title="plural"
+      placeholder="Write a plural form"
+      [control]="form.controls.plural"
+    />
+    <!--<h3>Examples</h3>
 
-  <br />
+    <div>
+      <label for="sentence">Example</label>
+      <input
+        id="sentence"
+        class="form-control"
+        placeholder="Write a sentence in English"
+        [value]="newSentence()"
+        (input)="newSentence.set($any($event.target).value)"
+      />
 
-  <!-- Themes -->
-  <h3>Choose themes</h3>
-  <button (click)="themasBtn()" class="btn btn-success">Choose the themes</button>
-  @if(form.controls.themas.touched && form.controls.themas.errors?.["HasNoThemas"]){
-    <div class="text-start ms-2 text-danger">
-      You have to choose a theme!
+      <label for="translate">Translation</label>
+      <input
+        id="translate"
+        class="form-control"
+        placeholder="Write the translation"
+        [value]="newTranslate()"
+        (input)="newTranslate.set($any($event.target).value)"
+      />
+      
+      <button type="button" class="btn btn-secondary" (click)="addSentence()">Add example</button>
     </div>
-  }
-
-  <br />
-
-  <!-- Buttons -->
-  <div>
-    <button type="button" (click)="createButton()" [disabled]="form.invalid" class="btn btn-success">Save a card</button>
-
-    <button type="button" routerLink="/thema" class="btn btn-secondary">Cancel</button>
-
-    @if (isEditMode()) {
-      <button type="button" (click)="pressDelete()" class="btn btn-danger">Delete</button>
+    -->
+    <h3>Choose themes</h3>
+    <button type="button" (click)="themasBtn()" class="btn btn-success">Choose the themes</button>
+    @if (form.controls.themas.touched && form.controls.themas.errors?.['HasNoThemas']) {
+      <div class="text-start ms-2 text-danger">You have to choose a theme!</div>
     }
     <h3>Chosen themes</h3>
     {{ this.selectedThemas().map((t) => t.name) }}
-  </div>
-</form>
+    <!--<div class="mt-3">
+      @for (example of selectedSentences(); track $index) {
+        <div class="border rounded p-2 mb-2">
+          <strong>{{ example.sentence }}</strong>
+          <p>{{ example.translation }}</p>
+        </div>
+      }
+    </div>-->
+    <br />
+    <button type="button" (click)="sentencesBtn()" class="btn btn-success">Add a new sentence</button>
+    <h3>Examples</h3>
+    {{ this.selectedSentences().map((s) => s.sentence) }}
+    <br />
+    <div>
+      <button
+        type="button"
+        (click)="createButton()"
+        [disabled]="form.invalid"
+        class="btn btn-success"
+      >
+        Save a card
+      </button>
+      <button type="button" routerLink="/thema" class="btn btn-secondary">Cancel</button>
+      @if (isEditMode()) {
+        <button type="button" (click)="pressDelete()" class="btn btn-danger">Delete</button>
+      }
+    </div>
+  </form>
 </body>

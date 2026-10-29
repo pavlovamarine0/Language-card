@@ -2,13 +2,13 @@ package com.maryna.LanguageCard.Models;
 
 public class SentanceModel {
     int id;
-    String text;
+    String sentence;
     String translate;
     public int getId(){
         return id;
     }
-    public String getText(){
-        return text;
+    public String getSentence(){
+        return sentence;
     }
     public String getTranslate(){
         return translate;
@@ -16,8 +16,8 @@ public class SentanceModel {
     public void setId(int id){
         this.id = id;
     }
-    public void setText(String text){
-        this.text = text;
+    public void setSentence(String sentence){
+        this.sentence = sentence;
     }
     public void setTranslate(String translate){
         this.translate = translate;

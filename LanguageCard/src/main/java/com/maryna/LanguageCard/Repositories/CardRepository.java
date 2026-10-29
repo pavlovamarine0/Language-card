@@ -18,9 +18,9 @@ public class CardRepository {
 
     public CardModel create(CardModel cardModel) {
         var keyHolder = new GeneratedKeyHolder();
-        _jdbc.sql("INSERT INTO CARDS(WORD, TRANS_WORD, PLURAL) VALUES(:word, :trans_Word, :plural) returning id")
+        _jdbc.sql("INSERT INTO CARDS(WORD, TRANSLATION, PLURAL) VALUES(:word, :translation, :plural) returning id")
                 .param("word",cardModel.getWord())
-                .param("trans_Word",cardModel.getTransWord())
+                .param("translation",cardModel.getTranslation())
                 .param("plural",cardModel.getPlural())
                 .update(keyHolder);
         var id = ((Number)keyHolder.getKeys().get("id")).intValue();
@@ -47,23 +47,23 @@ public class CardRepository {
     }
     public List<CardModel> getAll(int themaId) {
         return _jdbc.sql("SELECT * FROM CARDS " +
-                        "JOIN themas_cards ON cards.id = themas_cards.card_id " +
-                        "WHERE themas_cards.thema_id = :themaId;")
+                        "JOIN THEMES_CARDS ON cards.id = THEMES_CARDS.card_id " +
+                        "WHERE THEMES_CARDS.theme_id = :themaId;")
                 .param("themaId", themaId)
                 .query(CardModel.class)
                 .list();
     }
     public List<CardModel> findThemaIdsIsNull(){
         return _jdbc.sql("SELECT * FROM CARDS " +
-                        "LEFT JOIN THEMAS_CARDS ON " +
-                        "cards.id = themas_cards.card_id WHERE themas_cards.card_id IS NULL")
+                        "LEFT JOIN THEMES_CARDS ON " +
+                        "cards.id = THEMES_CARDS.card_id WHERE THEMES_CARDS.card_id IS NULL")
                 .query(CardModel.class)
                 .list();
     }
     public int update(CardModel cardModel){
-        _jdbc.sql("UPDATE CARDS SET WORD = :word, TRANS_WORD = :trans_Word, PLURAL = :plural WHERE ID = :id")
+        _jdbc.sql("UPDATE CARDS SET WORD = :word, TRANSLATION = :translation, PLURAL = :plural WHERE ID = :id")
                 .param("word", cardModel.getWord())
-                .param("trans_Word", cardModel.getTransWord())
+                .param("translation", cardModel.getTranslation())
                 .param("plural", cardModel.getPlural())
                 .param("id", cardModel.getId())
                 .update();
