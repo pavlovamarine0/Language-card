@@ -16,7 +16,7 @@ public class SentencesController {
         _Sentenceservice = Sentenceservice;
     }
     @GetMapping()
-    public List<SentanceModel> getSentences(@RequestParam GetSentencesRequestModel getSentencesRequestModel) {
+    public List<SentanceModel> getSentences(@ModelAttribute GetSentencesRequestModel getSentencesRequestModel) {
         return _Sentenceservice.getAll(getSentencesRequestModel);
     }
 
