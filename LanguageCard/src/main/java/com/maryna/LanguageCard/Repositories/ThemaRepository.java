@@ -16,26 +16,26 @@ public class ThemaRepository {
     }
 
     public Boolean exists(int themaId){
-        var count = _jdbc.sql("SELECT COUNT(*) FROM themas WHERE ID = :id")
+        var count = _jdbc.sql("SELECT COUNT(*) FROM themes WHERE ID = :id")
                 .param("id", themaId)
                 .query(Integer.class)
                 .single();
         return count == 1;
     }
     public List<ThemaModel> getAll() {
-        return _jdbc.sql("SELECT * FROM THEMAS")
+        return _jdbc.sql("SELECT * FROM THEMES")
                 .query(ThemaModel.class)
                 .list();
     }
     public Optional<ThemaModel> getById(int id) {
-        return _jdbc.sql("SELECT * FROM THEMAS WHERE ID = :id")
+        return _jdbc.sql("SELECT * FROM THEMES WHERE ID = :id")
                 .param("id", id)
                 .query(ThemaModel.class)
                 .optional();
     }
     public ThemaModel create(String name) {
         var keyHolder = new GeneratedKeyHolder();
-        _jdbc.sql("INSERT INTO THEMAS(NAME) VALUES(:name) returning id")
+        _jdbc.sql("INSERT INTO THEMES(NAME) VALUES(:name) returning id")
                 .param("name",name)
                 .update(keyHolder);
         var id = ((Number)keyHolder.getKeys().get("id")).intValue();
@@ -45,21 +45,21 @@ public class ThemaRepository {
         return themaModel;
     }
     public ThemaModel update(ThemaModel themaModel){
-        _jdbc.sql("UPDATE THEMAS SET NAME = :name WHERE ID = :id")
+        _jdbc.sql("UPDATE THEMES SET NAME = :name WHERE ID = :id")
                 .param("name", themaModel.getName())
                 .param("id", themaModel.getId())
                 .update();
         return themaModel;
     }
     public int select(ThemaModel themaModel){
-        var count = _jdbc.sql("SELECT COUNT(*) FROM themas WHERE ID = :id")
+        var count = _jdbc.sql("SELECT COUNT(*) FROM themes WHERE ID = :id")
                 .param("id", themaModel.getId())
                 .query(Integer.class)
                 .single();
         return count;
     }
     public void delete(int id){
-        _jdbc.sql("DELETE FROM THEMAS WHERE ID = :id")
+        _jdbc.sql("DELETE FROM THEMES WHERE ID = :id")
                 .param("id", id)
                 .update();
     }

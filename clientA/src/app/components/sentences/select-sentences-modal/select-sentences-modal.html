@@ -1,0 +1,42 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Sentences</h4>
+  <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+</div>
+<div>
+  <h3>Your sentences:</h3>
+  {{ this.allSentences().map((s) => s.sentence) }}
+  <div class="modal-footer">
+    <div>
+      <label for="sentence">A new sentence!</label>
+      <app-input-field
+        title="In English"
+        placeholder="Write a sentence"
+        [control]="form.controls.sentence"
+      />
+      <app-input-field
+        title="Translation"
+        placeholder="Write a translation"
+        [control]="form.controls.translate"
+      />
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" (click)="saveBtn()">Save</button>
+      </div>
+      <div>
+        <h3>Possible variants:</h3>
+        @for (sentence of offeredSentences(); track sentence.id) {
+          <div>
+            <label>
+              <input
+                type="checkbox"
+                [checked]="isSentenceSelected(sentence)"
+                (change)="toggleSentence(sentence, $event)"
+              />
+              {{ sentence.sentence }}
+            </label>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+</div>
