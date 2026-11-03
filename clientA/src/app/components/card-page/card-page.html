@@ -13,6 +13,7 @@
     <tr>
       <th>ID</th>
       <th>Word</th>
+      <th>Translation</th>
       <th>Actions</th>
     </tr>
   </thead>
@@ -23,6 +24,7 @@
         <td>
           {{ cardItem.word }}
         </td>
+        <td>{{ cardItem.translation }}</td>
         <td>
           <button routerLink="/card/{{cardItem.id}}" class="btn btn-success">Change</button>
         </td>

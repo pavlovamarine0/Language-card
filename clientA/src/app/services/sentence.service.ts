@@ -8,7 +8,7 @@ export class SentenceService {
   private readonly url = environment.apiUrl + 'sentences';
   private readonly _client = inject(HttpClient);
   getAllByCardId(cardId: number) {
-    const params = new HttpParams().append('cardId', cardId);
+    const params = new HttpParams().append('cardId', cardId).append('keyWord', 'm');
     return this._client.get<SentenceModel[]>(this.url, { params });
   }
   getAll() {

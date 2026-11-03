@@ -54,10 +54,9 @@ public class CardService {
         for (var themaId : cardModel.getThemaIds()) {
             _themaCardRepository.bind(cardModel.getId(), themaId);
         }
-        if (cardModel.getSentences() != null) {
-            for (var sentense : cardModel.getSentences()) {
-                var savedSentences = _sentenceRepository.create(sentense);
-                _cardSentanceRepository.bind(savedSentences.getId(), cardModel.getId());
+        if (cardModel.getSentenceIds() != null) {
+            for (var sentense : cardModel.getSentenceIds()) {
+                _cardSentanceRepository.bind(sentense, cardModel.getId());
             }
         }
         return cardModel;

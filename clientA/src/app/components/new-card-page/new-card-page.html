@@ -1,5 +1,9 @@
 <body>
-  <h1>Create a new card</h1>
+  @if (isEditMode()) {
+    <h1>Change the card</h1>
+  }@else{
+    <h1>Create a new card</h1>
+  }
   <form [formGroup]="form">
     <app-input-field title="word" placeholder="Write the word" [control]="form.controls.word" />
     <app-input-field
@@ -12,30 +16,6 @@
       placeholder="Write a plural form"
       [control]="form.controls.plural"
     />
-    <!--<h3>Examples</h3>
-
-    <div>
-      <label for="sentence">Example</label>
-      <input
-        id="sentence"
-        class="form-control"
-        placeholder="Write a sentence in English"
-        [value]="newSentence()"
-        (input)="newSentence.set($any($event.target).value)"
-      />
-
-      <label for="translate">Translation</label>
-      <input
-        id="translate"
-        class="form-control"
-        placeholder="Write the translation"
-        [value]="newTranslate()"
-        (input)="newTranslate.set($any($event.target).value)"
-      />
-      
-      <button type="button" class="btn btn-secondary" (click)="addSentence()">Add example</button>
-    </div>
-    -->
     <h3>Choose themes</h3>
     <button type="button" (click)="themasBtn()" class="btn btn-success">Choose the themes</button>
     @if (form.controls.themas.touched && form.controls.themas.errors?.['HasNoThemas']) {
@@ -52,7 +32,9 @@
       }
     </div>-->
     <br />
-    <button type="button" (click)="sentencesBtn()" class="btn btn-success">Add a new sentence</button>
+    <button type="button" (click)="sentencesBtn()" class="btn btn-success">
+      Add a new sentence
+    </button>
     <h3>Examples</h3>
     {{ this.selectedSentences().map((s) => s.sentence) }}
     <br />

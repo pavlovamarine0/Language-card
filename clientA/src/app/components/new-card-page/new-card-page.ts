@@ -52,8 +52,7 @@ export class NewCardPage implements OnInit {
           });
           this.sentenceService.getAllByCardId(Number(id)).subscribe({
             next: (sentences) => {
-              const saved = sentences.filter((s) => card.sentenceIds.includes(s.id));
-              this.form.controls.sentences.setValue(saved);
+              this.form.controls.sentences.setValue(sentences);
             },
             error: (err) => {
               console.error(err);
