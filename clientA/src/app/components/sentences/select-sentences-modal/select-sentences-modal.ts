@@ -3,12 +3,12 @@ import { SentenceService } from '../../../services/sentence.service';
 import { SentenceModel } from '../../../Models/sentence.model';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute } from '@angular/router';
-import { FormBuilder, Validators } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputField } from '../../../core/components/forms/input-field/input-field';
 
 @Component({
   selector: 'app-select-sentences-modal',
-  imports: [ InputField],
+  imports: [ InputField, ReactiveFormsModule],
   templateUrl: './select-sentences-modal.html',
   styleUrl: './select-sentences-modal.css',
 })
@@ -31,26 +31,35 @@ export class SelectSentencesModal implements OnInit {
     this.sentenceService.getAllByCardId(Number(this.cardId)).subscribe((s) => {
       this.allSentences.set(s);
     });
+    this.getKeyWordSentences();
     console.log(this.allSentences);
   }
   isSentenceSelected(sentence: SentenceModel): boolean {
     return this.allSentences().some((s) => s.id === sentence.id);
   }
-  toggleSentence(selectedSentence: SentenceModel, event: Event) {
-    const checkbox = event.target as HTMLInputElement;
-    if (checkbox.checked) {
+  chooseSentence(selectedSentence: SentenceModel) {
+    
       this.allSentences.update((sentences) => {
         if (sentences.some((s) => s.id === selectedSentence.id)) {
           return sentences;
         }
         return [...sentences, selectedSentence];
       });
-    } else {
-      this.allSentences.update((sentences) =>
-        sentences.filter((s) => s.id !== selectedSentence.id),
-      );
-    }
+      this.offeredSentences.update((sentences) =>{
+        return sentences.filter((s) => s.id !== selectedSentence.id);
+      })
   }
+  /*filter(array: SentenceModel[]){
+    const list:SentenceModel[] =[];
+    const selectedSentence = new SentenceModel();
+    for(var i of array){
+      if(i.id!=selectedSentence.id){
+        list.push(i);
+      }
+    }
+    return list;
+  }*/
+
   saveBtn() {
     const newExample = this.form.getRawValue() as SentenceModel;
     this.sentenceService.create(newExample).subscribe({
@@ -70,5 +79,11 @@ export class SelectSentencesModal implements OnInit {
     this.sentenceService.getAllByKeyWord(this.keyWord).subscribe((s) => {
       this.offeredSentences.set(s);
     });
+  }
+  deleteBtn(sentence: SentenceModel){
+    this.sentenceService.unbindSentence(this.cardId, sentence.id).subscribe(()=> 
+    this.allSentences.update((sentences)=>
+    sentences.filter((s)=> s.id !== sentence.id))
+  );
   }
 }

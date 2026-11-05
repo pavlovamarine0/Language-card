@@ -40,4 +40,11 @@ public class SentencesController {
     public void deleteSentence(int id) {
         _Sentenceservice.delete(id);
     }
+
+    @DeleteMapping("/cards/{cardId}/sentences/{sentenceId}")
+    public void unbindSentence(@PathVariable int cardId, @PathVariable int sentenceId){
+        _Sentenceservice.unbindSentence(cardId, sentenceId);
+    }
 }
+
+

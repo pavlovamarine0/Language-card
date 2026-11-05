@@ -1,4 +1,4 @@
 package com.maryna.LanguageCard.Models;
 
-public record GetSentencesRequestModel(int cardId, String keyWord) {
+public record GetSentencesRequestModel(Integer cardId, String keyWord) {
 }

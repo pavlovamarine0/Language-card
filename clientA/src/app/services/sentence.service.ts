@@ -8,20 +8,18 @@ export class SentenceService {
   private readonly url = environment.apiUrl + 'sentences';
   private readonly _client = inject(HttpClient);
   getAllByCardId(cardId: number) {
-    const params = new HttpParams().append('cardId', cardId).append('keyWord', 'm');
+    const params = new HttpParams().append('cardId', cardId);
     return this._client.get<SentenceModel[]>(this.url, { params });
   }
   getAll() {
     return this._client.get<SentenceModel[]>(this.url);
   }
   getAllByKeyWord(keyWord: string) {
-  return this._client.get<SentenceModel[]>(
-    `${this.url}?keyWord=${encodeURIComponent(keyWord)}`
-  );
-}
+    const params = new HttpParams().append('keyWord', keyWord);
+    return this._client.get<SentenceModel[]>(`${this.url}`, {params});
+  }
 
   create(sentence: SentenceModel) {
-    
     return this._client.post<SentenceModel>(this.url, sentence);
   }
   delete(id: number) {
@@ -33,7 +31,10 @@ export class SentenceService {
   getById(id: number) {
     return this._client.get<SentenceModel>(`${this.url}/${id}`);
   }
-  getWithoutIdsCard(){
+  getWithoutIdsCard() {
     return this._client.get<SentenceModel[]>(this.url + '/without-card');
+  }
+  unbindSentence(cardId: number, sentenceId: number) {
+    return this._client.delete<void>(`${this.url}/cards/${cardId}/sentences/${sentenceId}`);
   }
 }

@@ -33,6 +33,12 @@ public class CardSentanceRepository {
                 .param("cardId", cardId)
                 .update();
     }
+    public void unbindSentence(int cardId, int sentenceId){
+        _jdbc.sql("DELETE FROM CARDS_SENTENCES WHERE sentence_id = :sentenceId AND card_id = :cardId")
+                .param("cardId", cardId)
+                .param("sentenceId", sentenceId)
+                .update();
+    }
     public List<Integer> getSentenceIds(int cardId){
         return _jdbc.sql("SELECT SENTENCE_ID FROM CARDS_SENTENCES WHERE CARD_ID = :id")
                 .param("id",cardId)

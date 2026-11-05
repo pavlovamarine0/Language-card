@@ -3,40 +3,66 @@
   <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
 </div>
 <div>
-  <h3>Your sentences:</h3>
-  {{ this.allSentences().map((s) => s.sentence) }}
-  <div class="modal-footer">
-    <div>
-      <label for="sentence">A new sentence!</label>
-      <app-input-field
-        title="In English"
-        placeholder="Write a sentence"
-        [control]="form.controls.sentence"
-      />
-      <app-input-field
-        title="Translation"
-        placeholder="Write a translation"
-        [control]="form.controls.translate"
-      />
-
-      <div class="modal-footer">
-        <button type="button" class="btn btn-outline-secondary" (click)="saveBtn()">Save</button>
-      </div>
+  <table class="table table-light table-striped">
+    <thead>
+      <h3>Your sentences:</h3>
+    </thead>
+    <tbody>
+      @for (sentenceItem of allSentences(); track sentenceItem.id) {
+        <tr>
+          <td>{{ sentenceItem.sentence }}</td>
+          <td>
+            {{ sentenceItem.translate }}
+          </td>
+          <td>
+            <button type="button" class="btn btn-danger" (click)="deleteBtn(sentenceItem)">
+              Delete
+            </button>
+          </td>
+        </tr>
+      }
       <div>
         <h3>Possible variants:</h3>
         @for (sentence of offeredSentences(); track sentence.id) {
           <div>
             <label>
               <input
-                type="checkbox"
+                type="button"
+                class="btn btn-success"
+                value="+"
                 [checked]="isSentenceSelected(sentence)"
-                (change)="toggleSentence(sentence, $event)"
+                (change)="chooseSentence(sentence)"
               />
               {{ sentence.sentence }}
             </label>
           </div>
         }
       </div>
-    </div>
-  </div>
+      <form [formGroup]="form">
+        <label for="sentence">A new sentence!</label>
+        <app-input-field
+          title="In English"
+          placeholder="Write a sentence"
+          [control]="form.controls.sentence"
+        />
+        <app-input-field
+          title="Translation"
+          placeholder="Write a translation"
+          [control]="form.controls.translate"
+        />
+
+        <div class="btn btn-success">
+          <button
+            type="button"
+            class="btn btn-outline-secondary"
+            (click)="saveBtn()"
+            [disabled]="form.invalid"
+          >
+            Save
+          </button>
+        </div>
+      </form>
+    </tbody>
+  </table>
+  <div class="modal-footer"></div>
 </div>

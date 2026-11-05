@@ -22,7 +22,7 @@ public class SentenceService {
     }
 
     public List<SentanceModel> getAll(GetSentencesRequestModel request) {
-        if(request.cardId() != 0){
+        if(request.cardId() != null){
             return _sentanceRepository.getAllByCardId(request.cardId());
         }
         if(request.keyWord() != null && !request.keyWord().isBlank()) {
@@ -56,6 +56,10 @@ public class SentenceService {
         }
         var sentenceId = _sentanceRepository.update(sentanceModel);
         return getById(sentenceId);
+    }
+    @Transactional()
+    public void unbindSentence(int cardId, int sentenceId){
+        _cardSentanceRepository.unbindSentence(cardId, sentenceId);
     }
 }
 
