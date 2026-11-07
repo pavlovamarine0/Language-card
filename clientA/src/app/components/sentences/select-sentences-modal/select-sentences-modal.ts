@@ -34,9 +34,6 @@ export class SelectSentencesModal implements OnInit {
     this.getKeyWordSentences();
     console.log(this.allSentences);
   }
-  isSentenceSelected(sentence: SentenceModel): boolean {
-    return this.allSentences().some((s) => s.id === sentence.id);
-  }
   chooseSentence(selectedSentence: SentenceModel) {
     
       this.allSentences.update((sentences) => {
@@ -49,17 +46,6 @@ export class SelectSentencesModal implements OnInit {
         return sentences.filter((s) => s.id !== selectedSentence.id);
       })
   }
-  /*filter(array: SentenceModel[]){
-    const list:SentenceModel[] =[];
-    const selectedSentence = new SentenceModel();
-    for(var i of array){
-      if(i.id!=selectedSentence.id){
-        list.push(i);
-      }
-    }
-    return list;
-  }*/
-
   saveBtn() {
     const newExample = this.form.getRawValue() as SentenceModel;
     this.sentenceService.create(newExample).subscribe({
