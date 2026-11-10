@@ -1,7 +1,11 @@
+import { SentenceModel } from "./sentence.model";
+
 export class CardModel {
     id = 0;
     word = "";
-    transWord = "";
+    translation = "";
     plural = "";
-    themaIds :number[] = []; 
+    themaIds :number[] = [];
+    sentenceIds : number[] = [];
+    sentences : SentenceModel[] = [];
 }

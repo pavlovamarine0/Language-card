@@ -15,12 +15,14 @@ public class CardService {
     private final ThemaRepository _themaRepository;
     private final ThemaCardRepository _themaCardRepository;
     private final CardSentanceRepository _cardSentanceRepository;
+    private final SentanceRepository _sentenceRepository;
     public CardService(CardRepository cardRepository, ThemaRepository themaRepository, ThemaCardRepository themaCard,
-                       CardSentanceRepository cardSentanceRepository) {
+                       CardSentanceRepository cardSentanceRepository, SentanceRepository sentenceRepository) {
         _cardRepository = cardRepository;
         _themaRepository = themaRepository;
         _themaCardRepository = themaCard;
         _cardSentanceRepository = cardSentanceRepository;
+        _sentenceRepository = sentenceRepository;
     }
 
     public List<CardModel> getAll(int themaId) {
@@ -37,7 +39,7 @@ public class CardService {
         }
         var cardModel = card.get();
         cardModel.setThemaIds(new LinkedList<>(_themaCardRepository.getThemaIds(id)));
-
+        cardModel.setSentenceIds(_cardSentanceRepository.getSentenceIds(id));
         return cardModel;
     }
 
@@ -49,9 +51,13 @@ public class CardService {
             }
         }
         cardModel = _cardRepository.create(cardModel);
-
         for (var themaId : cardModel.getThemaIds()) {
             _themaCardRepository.bind(cardModel.getId(), themaId);
+        }
+        if (cardModel.getSentenceIds() != null) {
+            for (var sentense : cardModel.getSentenceIds()) {
+                _cardSentanceRepository.bind(sentense, cardModel.getId());
+            }
         }
         return cardModel;
     }
@@ -67,14 +73,18 @@ public class CardService {
         }
         var cardId = _cardRepository.update(cardModel);
         _themaCardRepository.unbind(cardId);
+        _cardSentanceRepository.unbind(cardId);
         for(var themaId : cardModel.getThemaIds()){
             _themaCardRepository.bind(cardId, themaId);
+        }
+        for(var sentenceId : cardModel.getSentenceIds()){
+            _cardSentanceRepository.bind(sentenceId, cardId);
         }
         return getById(cardId);
     }
 
     public void delete(int id)throws BadRequestException{
-        if(_cardSentanceRepository.exists(id)){
+        if(_cardSentanceRepository.existsByCard(id)){
             throw new BadRequestException("This card has saved sentences!");
         }
         _cardRepository.delete(id);

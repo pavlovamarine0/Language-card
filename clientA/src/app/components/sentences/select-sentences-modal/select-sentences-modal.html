@@ -1,0 +1,113 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title">Sentences</h4>
+
+  <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss()"></button>
+</div>
+
+<div class="modal-body">
+  <h3>Your sentences:</h3>
+
+  <table class="table table-light table-striped">
+    <thead>
+      <tr>
+        <th>Sentence</th>
+        <th>Translation</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      @for (sentenceItem of allSentences(); track sentenceItem.id) {
+        <tr>
+          <td>
+          @if (editingSentenceId === sentenceItem.id) {
+          <app-input-field
+            title="Sentence"
+            [control]="editingForm.controls.sentence"
+          />
+        } @else {
+          {{ sentenceItem.sentence }}
+        }
+      </td>
+      <td>
+        @if (editingSentenceId === sentenceItem.id) {
+          <app-input-field
+            title="Translation"
+            [control]="editingForm.controls.translate"
+          />
+        } @else {
+          {{ sentenceItem.translate }}
+        }
+      </td>
+      <td>
+        @if (editingSentenceId === sentenceItem.id) {
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="updateBtn(sentenceItem)"
+            [disabled]="editingForm.invalid"
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="cancelEdit()"
+          >
+            Cancel
+          </button>
+          <button type="button" class="btn btn-danger" (click)="deleteBtn(sentenceItem)">
+            Delete
+          </button>
+        } @else {
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="editSentence(sentenceItem)"
+          >
+            Change
+          </button>
+        }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+  <hr />
+  <h3>Possible variants:</h3>
+  @for (sentence of offeredSentences(); track sentence.id) {
+    <div class="mb-2">
+      <label>
+        <input type="button" value="+" (click)="chooseSentence(sentence)" />
+
+        {{ sentence.sentence }}
+      </label>
+    </div>
+  }
+  <hr />
+  <form [formGroup]="form">
+    <h3>A new sentence!</h3>
+
+    <app-input-field
+      title="In English"
+      placeholder="Write a sentence"
+      [control]="form.controls.sentence"
+    />
+
+    <app-input-field
+      title="Translation"
+      placeholder="Write a translation"
+      [control]="form.controls.translate"
+    />
+
+    <button
+      type="button"
+      class="btn btn-success mt-3"
+      (click)="saveBtn()"
+      [disabled]="form.invalid"
+    >
+      Save
+    </button>
+  </form>
+</div>
+<div class="modal-footer"></div>
