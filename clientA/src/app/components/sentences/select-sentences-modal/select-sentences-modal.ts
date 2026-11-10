@@ -5,6 +5,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { ActivatedRoute } from '@angular/router';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputField } from '../../../core/components/forms/input-field/input-field';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-select-sentences-modal',
@@ -17,10 +18,16 @@ export class SelectSentencesModal implements OnInit {
   allSentences = signal<SentenceModel[]>([]); //allSentencesByCardId
   offeredSentences = signal<SentenceModel[]>([]); // offeredKeyWordSentences to add
   modal = inject(NgbActiveModal);
+  private toastr = inject(ToastrService);
+  editingSentenceId = 0;
   keyWord = '';
   cardId = 0;
   readonly form = inject(FormBuilder).nonNullable.group({
     id: [0],
+    sentence: ['', [Validators.required, Validators.maxLength(150)]],
+    translate: ['', [Validators.required, Validators.maxLength(150)]],
+  });
+  readonly editingForm = inject(FormBuilder).nonNullable.group({
     sentence: ['', [Validators.required, Validators.maxLength(150)]],
     translate: ['', [Validators.required, Validators.maxLength(150)]],
   });
@@ -35,7 +42,7 @@ export class SelectSentencesModal implements OnInit {
     console.log(this.allSentences);
   }
   chooseSentence(selectedSentence: SentenceModel) {
-    
+
       this.allSentences.update((sentences) => {
         if (sentences.some((s) => s.id === selectedSentence.id)) {
           return sentences;
@@ -67,9 +74,32 @@ export class SelectSentencesModal implements OnInit {
     });
   }
   deleteBtn(sentence: SentenceModel){
-    this.sentenceService.unbindSentence(this.cardId, sentence.id).subscribe(()=> 
+    this.sentenceService.unbindSentence(this.cardId, sentence.id).subscribe(()=>
     this.allSentences.update((sentences)=>
     sentences.filter((s)=> s.id !== sentence.id))
   );
+  }
+  updateBtn(sentence: SentenceModel){
+    const updateSentence : SentenceModel = {
+      ...sentence,
+      ...this.editingForm.getRawValue()
+    };
+    this.sentenceService.update(updateSentence).subscribe((s)=>{
+      this.allSentences.update(sen => sen.map(i => i.id === s.id ? s : i));
+      this.editingSentenceId = 0;
+      this.editingForm.reset();
+      this.toastr.success('The sentence is updated!');
+    })
+  }
+  editSentence(sentence: SentenceModel) {
+    this.editingSentenceId = sentence.id;
+    this.editingForm.patchValue({
+      sentence: sentence.sentence,
+      translate: sentence.translate
+    });
+  }
+  cancelEdit() {
+    this.editingSentenceId = 0;
+    this.editingForm.reset();
   }
 }

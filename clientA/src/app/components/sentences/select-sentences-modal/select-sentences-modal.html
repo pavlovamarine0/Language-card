@@ -19,12 +19,55 @@
     <tbody>
       @for (sentenceItem of allSentences(); track sentenceItem.id) {
         <tr>
-          <td>{{ sentenceItem.sentence }}</td>
-          <td>{{ sentenceItem.translate }}</td>
           <td>
-            <button type="button" class="btn btn-danger" (click)="deleteBtn(sentenceItem)">
-              Delete
-            </button>
+          @if (editingSentenceId === sentenceItem.id) {
+          <app-input-field
+            title="Sentence"
+            [control]="editingForm.controls.sentence"
+          />
+        } @else {
+          {{ sentenceItem.sentence }}
+        }
+      </td>
+      <td>
+        @if (editingSentenceId === sentenceItem.id) {
+          <app-input-field
+            title="Translation"
+            [control]="editingForm.controls.translate"
+          />
+        } @else {
+          {{ sentenceItem.translate }}
+        }
+      </td>
+      <td>
+        @if (editingSentenceId === sentenceItem.id) {
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="updateBtn(sentenceItem)"
+            [disabled]="editingForm.invalid"
+          >
+            Save
+          </button>
+          <button
+            type="button"
+            class="btn btn-secondary"
+            (click)="cancelEdit()"
+          >
+            Cancel
+          </button>
+          <button type="button" class="btn btn-danger" (click)="deleteBtn(sentenceItem)">
+            Delete
+          </button>
+        } @else {
+          <button
+            type="button"
+            class="btn btn-success"
+            (click)="editSentence(sentenceItem)"
+          >
+            Change
+          </button>
+        }
           </td>
         </tr>
       }
@@ -35,11 +78,7 @@
   @for (sentence of offeredSentences(); track sentence.id) {
     <div class="mb-2">
       <label>
-        <input
-          type="button"
-          value="+"
-          (click)="chooseSentence(sentence)"
-        />
+        <input type="button" value="+" (click)="chooseSentence(sentence)" />
 
         {{ sentence.sentence }}
       </label>
@@ -67,7 +106,7 @@
       (click)="saveBtn()"
       [disabled]="form.invalid"
     >
-    Save
+      Save
     </button>
   </form>
 </div>
