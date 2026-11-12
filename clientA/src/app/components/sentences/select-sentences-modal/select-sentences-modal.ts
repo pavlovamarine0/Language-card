@@ -27,10 +27,6 @@ export class SelectSentencesModal implements OnInit {
     sentence: ['', [Validators.required, Validators.maxLength(150)]],
     translate: ['', [Validators.required, Validators.maxLength(150)]],
   });
-  readonly editingForm = inject(FormBuilder).nonNullable.group({
-    sentence: ['', [Validators.required, Validators.maxLength(150)]],
-    translate: ['', [Validators.required, Validators.maxLength(150)]],
-  });
   ngOnInit(): void {
     if (!this.cardId) {
       return;
@@ -79,27 +75,27 @@ export class SelectSentencesModal implements OnInit {
     sentences.filter((s)=> s.id !== sentence.id))
   );
   }
-  updateBtn(sentence: SentenceModel){
-    const updateSentence : SentenceModel = {
-      ...sentence,
-      ...this.editingForm.getRawValue()
-    };
+  updateBtn(){
+    const updateSentence = {
+      ...this.form.getRawValue()
+    } as SentenceModel;
     this.sentenceService.update(updateSentence).subscribe((s)=>{
       this.allSentences.update(sen => sen.map(i => i.id === s.id ? s : i));
       this.editingSentenceId = 0;
-      this.editingForm.reset();
+      this.form.reset();
       this.toastr.success('The sentence is updated!');
     })
   }
   editSentence(sentence: SentenceModel) {
     this.editingSentenceId = sentence.id;
-    this.editingForm.patchValue({
+    this.form.patchValue({
+      id: sentence.id,
       sentence: sentence.sentence,
       translate: sentence.translate
     });
   }
   cancelEdit() {
     this.editingSentenceId = 0;
-    this.editingForm.reset();
+    this.form.reset();
   }
 }

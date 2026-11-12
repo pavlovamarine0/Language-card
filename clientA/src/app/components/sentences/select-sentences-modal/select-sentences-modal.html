@@ -23,7 +23,7 @@
           @if (editingSentenceId === sentenceItem.id) {
           <app-input-field
             title="Sentence"
-            [control]="editingForm.controls.sentence"
+            [control]="form.controls.sentence"
           />
         } @else {
           {{ sentenceItem.sentence }}
@@ -33,7 +33,7 @@
         @if (editingSentenceId === sentenceItem.id) {
           <app-input-field
             title="Translation"
-            [control]="editingForm.controls.translate"
+            [control]="form.controls.translate"
           />
         } @else {
           {{ sentenceItem.translate }}
@@ -44,8 +44,8 @@
           <button
             type="button"
             class="btn btn-success"
-            (click)="updateBtn(sentenceItem)"
-            [disabled]="editingForm.invalid"
+            (click)="updateBtn()"
+            [disabled]="form.invalid"
           >
             Save
           </button>
