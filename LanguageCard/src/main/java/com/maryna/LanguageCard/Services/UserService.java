@@ -1,6 +1,7 @@
 package com.maryna.LanguageCard.Services;
 
 import com.maryna.LanguageCard.Models.CardModel;
+import com.maryna.LanguageCard.DTOs.Users.LoginResponseDto;
 import com.maryna.LanguageCard.Models.UserModel;
 import com.maryna.LanguageCard.Repositories.UserRepository;
 import org.apache.coyote.BadRequestException;
@@ -8,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class UserService {
@@ -18,22 +18,21 @@ public class UserService {
     }
    @Transactional
     public void create(UserModel userModel) throws BadRequestException {
-       /* for (var login : userModel.getLoginList()){
-            if(_userRepository.existLogin(login)){
-                throw new BadRequestException("This login exists");
-            }
-        }*/
+       var existingUser = _userRepository.getByEmail(userModel.getEmail());
+       if(existingUser != null){
+           throw new BadRequestException("The email exists!");
+       }
         _userRepository.create(userModel);
     }
-    public void loginUser(UserModel userModel) throws  BadRequestException{
-        var user = _userRepository.getByEmail(userModel.getEmail());
-        if(user == null){
+    public LoginResponseDto loginUser(UserModel userModel) throws  BadRequestException{
+        var existingUser = _userRepository.getByEmail(userModel.getEmail());
+        if(existingUser == null){
             throw new BadRequestException("The wrong email or password!");
         }
-        if(!userModel.getPassword().equals(user.getPassword())) {
+        if(!userModel.getPassword().equals(existingUser.getPassword())) {
             throw new BadRequestException("The wrong email or password!");
         };
-
+        return new LoginResponseDto(existingUser.getId());
     }
     @Transactional
     public int update(UserModel userModel) throws BadRequestException{
