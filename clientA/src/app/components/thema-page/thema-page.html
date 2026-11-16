@@ -5,6 +5,7 @@
         <h1>LanguageCards</h1>
       </div>
       <div class="col text-end mt-2">
+        <button routerLink="/user" class="user-page">My profile</button>
         <button routerLink="/card" class="new-card">New card</button>
         <button routerLink="/cards" [queryParams]="{ thema: 'without' }" class="new-card">
           All cards without themes
