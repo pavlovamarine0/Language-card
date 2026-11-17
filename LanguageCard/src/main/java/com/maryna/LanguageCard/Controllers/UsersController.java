@@ -5,6 +5,7 @@ import com.maryna.LanguageCard.DTOs.Users.LoginResponseDto;
 import com.maryna.LanguageCard.Models.UserModel;
 import com.maryna.LanguageCard.Services.UserService;
 import org.apache.coyote.BadRequestException;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,7 +39,7 @@ public class UsersController {
     }
 
     @GetMapping("/me")
-    public UserModel getMe(@RequestHeader (value = "Auth") String userId)throws BadRequestException{
+    public UserModel getMe(@RequestHeader (value = HttpHeaders.AUTHORIZATION) String userId)throws BadRequestException{
         return _userService.getMe(Integer.parseInt(userId));
     }
     @GetMapping("/{userId}/cards")

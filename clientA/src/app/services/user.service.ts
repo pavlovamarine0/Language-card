@@ -4,7 +4,7 @@ import { UserModel } from '../Models/user.model';
 import { environment } from '../../environment/environment';
 @Service()
 export class UserService {
-  private readonly url = environment.apiUrl + 'user';
+  private readonly url = environment.apiUrl + 'users';
   private readonly _client = inject(HttpClient);
 
   getAll() {
@@ -18,7 +18,7 @@ export class UserService {
     });
   }
   login(user: UserModel) {
-    return this._client.post<UserModel>(this.url, {
+    return this._client.post<UserModel>(this.url + '/login', {
       email: user.email,
       password: user.password,
     });

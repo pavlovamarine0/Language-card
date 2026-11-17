@@ -4,6 +4,7 @@ import { CardPage } from './components/card-page/card-page';
 import { Counter } from './counter/counter';
 import { NewCardPage } from './components/new-card-page/new-card-page';
 import { UserPage } from './components/user-page/user-page';
+import { LoginPage } from './components/login-page/login-page';
 
 export const routes: Routes = [
     {
@@ -30,6 +31,10 @@ export const routes: Routes = [
     {
         path: 'user',
         component: UserPage
+    },
+     {
+        path: 'login',
+        component: LoginPage
     },
     {
         path: "**",
