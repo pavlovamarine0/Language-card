@@ -1,6 +1,6 @@
 export class UserModel{
     id = 0;
-    userName = '';
+    username = '';
     email = '';
     password = '';
 }

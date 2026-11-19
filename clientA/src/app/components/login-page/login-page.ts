@@ -1,8 +1,9 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { UserService } from '../../services/user.service';
 import { UserModel } from '../../Models/user.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-page',
@@ -10,14 +11,20 @@ import { UserModel } from '../../Models/user.model';
   templateUrl: './login-page.html',
   styleUrl: './login-page.css',
 })
-export class LoginPage {
-  userLogin = new UserModel;
+export class LoginPage implements OnInit {
+  userLogin = new UserModel();
   userService = inject(UserService);
-
-  login(){
-    this.userService.login(this.userLogin).subscribe((u)=>
-    console.log(u)
-    )
+  router = inject(Router);
+  ngOnInit(): void {
+    if (localStorage.getItem('user')) {
+      this.router.navigateByUrl('thema');
+    }
   }
 
+  login() {
+    this.userService.login(this.userLogin).subscribe((u) => {
+      localStorage.setItem('user', JSON.stringify(u));
+      this.router.navigateByUrl('thema');
+    });
+  }
 }

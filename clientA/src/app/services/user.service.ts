@@ -11,8 +11,8 @@ export class UserService {
     return this._client.get<UserModel[]>(this.url);
   }
   create(user: UserModel) {
-    return this._client.post<UserModel>(this.url, {
-      userName: user.userName,
+    return this._client.post<UserModel>(this.url + '/register', {
+      username: user.username,
       email: user.email,
       password: user.password,
     });
@@ -23,16 +23,16 @@ export class UserService {
       password: user.password,
     });
   }
-  getMe(userId: number) {
+  getMe() {
     return this._client.get<UserModel>(`${this.url}/me`, {
       headers: {
-        Auth: userId.toString(),
+        Authorization: JSON.parse(localStorage.getItem('user')!).userId
       },
     });
   }
   update(user: UserModel) {
     return this._client.put<UserModel>(this.url, {
-      userName: user.userName,
+      userName: user.username,
       email: user.email,
       password: user.password,
     });

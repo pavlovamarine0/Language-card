@@ -10,8 +10,9 @@ import { UserModel } from '../../Models/user.model';
 })
 export class UserPage implements OnInit {
   ngOnInit(): void {
-    const userId = Number(localStorage.getItem('userId'));
+    const userId = JSON.parse(localStorage.getItem('user')!).userId;
     this.userService.getMe(userId).subscribe((user) => {
+      console.log(user);
       this.user = user;
     });
   }
